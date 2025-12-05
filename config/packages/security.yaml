@@ -7,6 +7,11 @@ security:
     providers:
         users_in_memory: { memory: null }
 
+        slack_user:
+            memory:
+                users:
+                    slack: { password: '', roles: ['ROLE_USER'] }
+
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
@@ -14,13 +19,9 @@ security:
             security: false
         main:
             lazy: true
-            provider: users_in_memory
-
-            # Activate different ways to authenticate:
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            provider: slack_user
+            custom_authenticators:
+                - App\Security\Authenticator\SignedSlackAuthenticator
 
     # Note: Only the *first* matching rule is applied
     access_control:

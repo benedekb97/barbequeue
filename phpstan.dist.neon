@@ -6,3 +6,5 @@ parameters:
         - src/
         - tests/Unit
         - tests/Integration
+    ignoreErrors:
+        - identifier: missingType.iterableValue
