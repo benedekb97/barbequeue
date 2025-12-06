@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Throwable;
 
 #[AsMessageHandler]
 readonly class SlackCommandMessageHandler
@@ -40,14 +41,18 @@ readonly class SlackCommandMessageHandler
         }
 
         if (($response = $command->getResponse()) instanceof SlackCommandResponse) {
-            $response = $this->httpClient->request('POST', $command->getResponseUrl(), [
-                'body' => json_encode($response->toArray()),
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-            ]);
+            try {
+                $response = $this->httpClient->request('POST', $command->getResponseUrl(), [
+                    'body' => $response->toArray(),
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                    ]
+                ]);
 
-            $this->logger->debug($response->getContent());
+                $this->logger->debug($response->getContent());
+            } catch (Throwable $e) {
+                $this->logger->debug($e->getMessage());
+            }
         }
     }
 }
