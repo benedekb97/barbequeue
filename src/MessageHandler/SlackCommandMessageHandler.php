@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Component\HttpClient\Exception\TransportException;
+use Symfony\Component\HttpClient\Response\CurlResponse;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -54,7 +55,11 @@ readonly class SlackCommandMessageHandler
 
                 $this->logger->debug($response->getContent());
             } catch(ServerException $e) {
-                $this->logger->debug($e->getResponse());
+                $response = $e->getResponse();
+
+                if ($response instanceof CurlResponse) {
+                    $this->logger->debug($response->getContent(false));
+                }
                 $this->logger->debug($e->getMessage());
             } catch (Throwable $e) {
                 $this->logger->debug($e->getMessage());
