@@ -25,6 +25,8 @@ class InteractionController
 
         $this->logger->debug(json_encode($request->request->all()));
 
+        $this->logger->debug(json_encode($request->request->get('actions')));
+
         return new JsonResponse();
     }
 }
