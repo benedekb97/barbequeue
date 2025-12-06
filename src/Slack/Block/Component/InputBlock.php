@@ -16,7 +16,8 @@ class InputBlock extends SlackBlock
         private readonly ?string $blockId = null,
         private readonly ?string $hint = null,
         private readonly bool $optional = false,
-    ) {}
+    ) {
+    }
 
     public function getType(): Block
     {

@@ -14,7 +14,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
-use ValueError;
 
 #[CoversClass(SlackCommandFactory::class)]
 class SlackCommandFactoryTest extends KernelTestCase
@@ -24,15 +23,15 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $request = new Request();
 
-        $request->request->set('text', 'non-existent-command');
+        $request->request->set('command', 'non-existent-command');
 
         $factory = new SlackCommandFactory();
 
-        $this->expectException(ValueError::class);
+        $this->expectException(\ValueError::class);
 
         try {
             $factory->createFromRequest($request);
-        } catch (ValueError $exception) {
+        } catch (\ValueError $exception) {
             $this->assertStringContainsString('non-existent-command', $exception->getMessage());
 
             throw $exception;
@@ -44,7 +43,7 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $request = new Request();
 
-        $request->request->set('text', 'bbq-admin');
+        $request->request->set('command', 'bbq-admin');
 
         $factory = new SlackCommandFactory();
 
@@ -64,15 +63,16 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $request = new Request();
 
-        $request->request->set('text', 'bbq-admin non-existent-sub-command');
+        $request->request->set('command', 'bbq-admin');
+        $request->request->set('text', 'non-existent-sub-command');
 
         $factory = new SlackCommandFactory();
 
-        $this->expectException(ValueError::class);
+        $this->expectException(\ValueError::class);
 
         try {
             $factory->createFromRequest($request);
-        } catch (ValueError $exception) {
+        } catch (\ValueError $exception) {
             $this->assertStringContainsString('non-existent-sub-command', $exception->getMessage());
 
             throw $exception;
@@ -84,7 +84,8 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $request = new Request();
 
-        $request->request->set('text', 'bbq add');
+        $request->request->set('command', 'bbq');
+        $request->request->set('text', 'add');
 
         $factory = new SlackCommandFactory();
 
@@ -105,7 +106,7 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $request = new Request();
 
-        $request->request->set('text', 'bbq');
+        $request->request->set('command', 'bbq');
 
         $factory = new SlackCommandFactory();
 
@@ -126,7 +127,8 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $request = new Request();
 
-        $request->request->set('text', 'bbq join');
+        $request->request->set('command', 'bbq');
+        $request->request->set('text', 'join');
 
         $factory = new SlackCommandFactory();
 
@@ -147,7 +149,8 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $request = new Request();
 
-        $request->request->set('text', 'bbq queueName');
+        $request->request->set('command', 'bbq');
+        $request->request->set('text', 'queueName');
 
         $factory = new SlackCommandFactory();
 
@@ -166,7 +169,8 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $request = new Request();
 
-        $request->request->set('text', 'bbq join queueName');
+        $request->request->set('command', 'bbq');
+        $request->request->set('text', 'join queueName');
 
         $factory = new SlackCommandFactory();
 

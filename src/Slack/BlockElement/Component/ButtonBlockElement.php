@@ -17,7 +17,8 @@ class ButtonBlockElement extends SlackBlockElement
         private readonly ?string $value = null,
         private readonly ?Style $style = null,
         private readonly ?SlackConfirmation $confirm = null,
-    ) {}
+    ) {
+    }
 
     public function getType(): BlockElement
     {

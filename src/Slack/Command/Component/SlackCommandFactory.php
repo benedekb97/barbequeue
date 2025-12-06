@@ -10,9 +10,7 @@ use App\Slack\Command\Component\Exception\InvalidSubCommandException;
 use App\Slack\Command\Component\Exception\SubCommandMissingException;
 use App\Slack\Command\SubCommand;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Request;
-use ValueError;
 
 class SlackCommandFactory
 {
@@ -20,7 +18,7 @@ class SlackCommandFactory
      * @throws SubCommandMissingException
      * @throws InvalidSubCommandException
      * @throws InvalidArgumentCountException
-     * @throws ValueError
+     * @throws \ValueError
      */
     public function createFromRequest(Request $request): SlackCommand
     {
@@ -64,21 +62,26 @@ class SlackCommandFactory
 
     private function getCommandString(Request $request): string
     {
-        return trim($request->request->get('command'), '/');
+        return trim((string) $request->request->get('command'), '/');
     }
 
-    private function getSubCommandString(Request $request): ?string
+    private function getSubCommandString(Request $request): string
     {
-        $requestText = $request->request->get('text');
+        $requestText = (string) $request->request->get('text');
 
         $commandParts = explode(' ', $requestText);
 
-        return $commandParts[0] ?? null;
+        return $commandParts[0];
     }
 
+    /**
+     * @return array|string[]
+     *
+     * @throws SubCommandMissingException
+     */
     private function getArguments(Request $request, Command $command, ?SubCommand $subCommand): array
     {
-        $commandParts = new ArrayCollection(explode(' ', $request->request->get('text')));
+        $commandParts = new ArrayCollection(explode(' ', (string) $request->request->get('text')));
 
         $argumentValues = array_values($commandParts->slice($subCommand === null ? 0 : 1));
 

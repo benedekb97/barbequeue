@@ -8,12 +8,13 @@ use App\Slack\Block\Component\SlackBlock;
 
 readonly class SlackMessage
 {
-    /** @param null|array|SlackBlock[] $blocks */
+    /** @param array|SlackBlock[]|null $blocks */
     public function __construct(
         private string $text,
-        /** @var null|array|SlackBlock[] $blocks */
+        /** @var array|SlackBlock[]|null $blocks */
         private ?array $blocks,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

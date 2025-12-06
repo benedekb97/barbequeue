@@ -14,7 +14,8 @@ class SectionBlock extends SlackBlock
         private readonly ?string $blockId = null,
         private readonly ?SlackBlockElement $accessory = null,
         private readonly bool $expand = false,
-    ) {}
+    ) {
+    }
 
     public function getType(): Block
     {

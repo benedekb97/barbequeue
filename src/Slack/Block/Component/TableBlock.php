@@ -12,7 +12,8 @@ class TableBlock extends SlackBlock
         private readonly array $rows,
         private readonly ?string $blockId = null,
         private readonly ?array $columnSettings = null,
-    ) {}
+    ) {
+    }
 
     public function getType(): Block
     {

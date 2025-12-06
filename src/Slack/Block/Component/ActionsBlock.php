@@ -14,7 +14,8 @@ class ActionsBlock extends SlackBlock
         /** @var array|SlackBlockElement[] $elements */
         private readonly array $elements,
         private readonly ?string $blockId = null,
-    ) {}
+    ) {
+    }
 
     public function getType(): Block
     {

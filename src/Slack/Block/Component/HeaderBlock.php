@@ -10,7 +10,8 @@ class HeaderBlock extends SlackBlock
 {
     public function __construct(
         private readonly string $text,
-    ) {}
+    ) {
+    }
 
     public function getType(): Block
     {

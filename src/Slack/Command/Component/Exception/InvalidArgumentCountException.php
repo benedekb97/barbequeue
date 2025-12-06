@@ -6,13 +6,12 @@ namespace App\Slack\Command\Component\Exception;
 
 use App\Slack\Command\Command;
 use App\Slack\Command\SubCommand;
-use Exception;
 
-class InvalidArgumentCountException extends Exception
+class InvalidArgumentCountException extends \Exception
 {
     public function __construct(
         private readonly Command $command,
-        private readonly ?SubCommand $subCommand
+        private readonly ?SubCommand $subCommand,
     ) {
         parent::__construct(
             'Invalid number of arguments provided for command '.$command->value.' '.$subCommand?->value

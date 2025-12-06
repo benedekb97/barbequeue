@@ -17,6 +17,11 @@ enum Command: string
         return count($this->getRequiredArguments($subCommand));
     }
 
+    /**
+     * @return array|string[]
+     *
+     * @throws SubCommandMissingException
+     */
     public function getRequiredArguments(?SubCommand $subCommand): array
     {
         return match ($this) {
@@ -25,13 +30,14 @@ enum Command: string
                 default => [],
             },
             self::BBQ_ADMIN => match ($subCommand) {
-                null => throw new SubCOmmandMissingException($this),
+                null => throw new SubCommandMissingException($this),
                 SubCommand::ADD, SubCommand::LEAVE => ['user'],
                 default => [],
             },
         };
     }
 
+    /** @return array|string[] */
     public function getOptionalArguments(?SubCommand $subCommand): array
     {
         return match ($this) {
@@ -39,6 +45,11 @@ enum Command: string
         };
     }
 
+    /**
+     * @return array|string[]
+     *
+     * @throws SubCommandMissingException
+     */
     public function getArguments(?SubCommand $subCommand): array
     {
         return array_merge($this->getRequiredArguments($subCommand), $this->getOptionalArguments($subCommand));
@@ -57,7 +68,8 @@ enum Command: string
         };
     }
 
-    public function getSubCommands(): ?array
+    /** @return array|SubCommand[] */
+    public function getSubCommands(): array
     {
         return match ($this) {
             self::BBQ => [SubCommand::JOIN, SubCommand::LEAVE],

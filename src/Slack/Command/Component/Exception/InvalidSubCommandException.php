@@ -6,13 +6,12 @@ namespace App\Slack\Command\Component\Exception;
 
 use App\Slack\Command\Command;
 use App\Slack\Command\SubCommand;
-use Exception;
 
-class InvalidSubCommandException extends Exception
+class InvalidSubCommandException extends \Exception
 {
     public function __construct(
         private readonly Command $command,
-        private readonly SubCommand $subCommand
+        private readonly SubCommand $subCommand,
     ) {
         parent::__construct(
             'Sub-command '.$this->subCommand->value.' is not compatible with command '.$command->value

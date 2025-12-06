@@ -14,7 +14,8 @@ readonly class SlackConfirmation
         private string $confirm,
         private string $deny,
         private ?Style $style = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

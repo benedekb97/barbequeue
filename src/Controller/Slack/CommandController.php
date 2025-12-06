@@ -20,16 +20,18 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use ValueError;
 
-class CommandController
+readonly class CommandController
 {
+    /** @param SlackCommandHandlerInterface[] $commandHandlers */
     public function __construct(
         private SlackCommandFactory $commandFactory,
         #[AutowireIterator(SlackCommandHandlerInterface::TAG)]
+        /** @var SlackCommandHandlerInterface[] $commandHandlers */
         private iterable $commandHandlers,
         private LoggerInterface $logger,
-    ) {}
+    ) {
+    }
 
     #[Route('/slack/command', methods: [Request::METHOD_POST])]
     public function __invoke(Request $request): JsonResponse
@@ -48,12 +50,13 @@ class CommandController
             $this->logger->debug($exception->getMessage());
 
             return $this->getInvalidSubCommandResponse($exception);
-        } catch (ValueError $error) {
+        } catch (\ValueError $error) {
             $this->logger->debug($error->getMessage());
 
             return $this->getUnrecognisedCommandResponse();
         }
 
+        /** @var SlackCommandHandlerInterface $handler */
         foreach ($this->commandHandlers as $handler) {
             if ($handler->supports($command) && $command->isPending()) {
                 $handler->handle($command);
@@ -74,7 +77,7 @@ class CommandController
                 $command->value,
                 $command->value,
                 implode('|', array_map(
-                    fn (SubCommand $subCommand) => $subCommand->value,
+                    fn (?SubCommand $subCommand) => $subCommand?->value,
                     $command->getSubCommands()
                 ))
             ),

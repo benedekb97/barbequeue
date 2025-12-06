@@ -13,7 +13,8 @@ class EmailInputElement extends SlackBlockElement
         private readonly ?string $initialValue = null,
         private readonly bool $focusOnLoad = false,
         private readonly ?string $placeholder = null,
-    ) {}
+    ) {
+    }
 
     public function getType(): BlockElement
     {
