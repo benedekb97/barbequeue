@@ -27,6 +27,9 @@ readonly class SlackCommandMessageHandler
     {
         $command = $message->getCommand();
 
+        $this->logger->debug('command '.$command->getCommand()->value);
+        $this->logger->debug('subcommand '.$command->getSubCommand()?->value);
+
         /** @var SlackCommandHandlerInterface $handler */
         foreach ($this->handlers as $handler) {
             if ($handler->supports($command) && $command->isPending()) {
