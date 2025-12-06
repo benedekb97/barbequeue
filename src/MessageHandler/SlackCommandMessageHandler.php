@@ -53,6 +53,9 @@ readonly class SlackCommandMessageHandler
 
                 $response = $this->httpClient->request('POST', $command->getResponseUrl(), [
                     'body' => $commandResponse->toArray(),
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                    ]
                 ]);
 
                 $this->logger->debug($response->getContent());
