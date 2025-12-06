@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Queue\Exception;
 
-use Exception;
-
-class QueueNotFoundException extends Exception
+class QueueNotFoundException extends \Exception
 {
     public function __construct(
         private readonly string $queueName,

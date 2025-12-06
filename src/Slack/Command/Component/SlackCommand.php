@@ -11,7 +11,7 @@ use App\Slack\Response\Interaction\SlackInteractionResponse;
 
 class SlackCommand
 {
-    private null|SlackCommandResponse|SlackInteractionResponse $response = null;
+    private SlackCommandResponse|SlackInteractionResponse|null $response = null;
 
     public function __construct(
         private readonly Command $command,
@@ -50,12 +50,12 @@ class SlackCommand
         return !isset($this->response);
     }
 
-    public function getResponse(): null|SlackCommandResponse|SlackInteractionResponse
+    public function getResponse(): SlackCommandResponse|SlackInteractionResponse|null
     {
         return $this->response;
     }
 
-    public function setResponse(null|SlackCommandResponse|SlackInteractionResponse $response): void
+    public function setResponse(SlackCommandResponse|SlackInteractionResponse|null $response): void
     {
         $this->response = $response;
     }

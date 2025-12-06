@@ -8,9 +8,7 @@ use App\Entity\Queue;
 use App\Slack\Block\Component\DividerBlock;
 use App\Slack\Block\Component\HeaderBlock;
 use App\Slack\Block\Component\SectionBlock;
-use App\Slack\Response\Command\SlackCommandResponse;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
-use App\Slack\Response\Response;
 
 class UnableToJoinQueueResponseFactory
 {
@@ -26,8 +24,8 @@ class UnableToJoinQueueResponseFactory
                         'You can only join the %s queue %d times.',
                         $queue->getName(),
                         $queue->getMaximumEntriesPerUser()
-                ),
-            )
+                    ),
+            ),
         ]);
     }
 }

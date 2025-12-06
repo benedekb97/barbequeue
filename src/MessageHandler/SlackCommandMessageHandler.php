@@ -6,20 +6,10 @@ namespace App\MessageHandler;
 
 use App\Message\SlackCommandMessage;
 use App\Slack\Command\Handler\SlackCommandHandlerInterface;
-use App\Slack\Response\Command\SlackCommandResponse;
+use App\Slack\Interaction\InteractionResponseHandler;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use Symfony\Component\HttpClient\Exception\ServerException;
-use Symfony\Component\HttpClient\Exception\TransportException;
-use Symfony\Component\HttpClient\Response\CurlResponse;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Throwable;
 
 #[AsMessageHandler]
 readonly class SlackCommandMessageHandler
@@ -28,9 +18,9 @@ readonly class SlackCommandMessageHandler
         #[AutowireIterator(SlackCommandHandlerInterface::TAG)]
         /** @var SlackCommandHandlerInterface[] $handlers */
         private iterable $handlers,
-        private HttpClientInterface $httpClient,
-        private LoggerInterface $logger,
-    ) {}
+        private InteractionResponseHandler $interactionResponseHandler,
+    ) {
+    }
 
     public function __invoke(SlackCommandMessage $message): void
     {
@@ -44,22 +34,7 @@ readonly class SlackCommandMessageHandler
         }
 
         if (($commandResponse = $command->getResponse()) instanceof SlackInteractionResponse) {
-            try {
-                $this->httpClient->request('POST', $command->getResponseUrl(), [
-                    'body' => json_encode($commandResponse->toArray(), JSON_UNESCAPED_SLASHES),
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                    ]
-                ]);
-            } catch(ServerException $e) {
-                $response = $e->getResponse();
-
-                $this->logger->debug($response->getContent(false));
-                $this->logger->debug($e->getMessage());
-            } catch (Throwable $e) {
-                $this->logger->debug($e->getMessage());
-                $this->logger->debug($e::class);
-            }
+            $this->interactionResponseHandler->handle($command->getResponseUrl(), $commandResponse);
         }
     }
 }

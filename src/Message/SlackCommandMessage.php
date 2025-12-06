@@ -10,7 +10,8 @@ readonly class SlackCommandMessage
 {
     public function __construct(
         private SlackCommand $command,
-    ) {}
+    ) {
+    }
 
     public function getCommand(): SlackCommand
     {

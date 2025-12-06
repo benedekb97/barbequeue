@@ -11,15 +11,14 @@ use App\Slack\Block\Component\DividerBlock;
 use App\Slack\Block\Component\HeaderBlock;
 use App\Slack\Block\Component\SectionBlock;
 use App\Slack\BlockElement\Component\ButtonBlockElement;
-use App\Slack\Response\Command\SlackCommandResponse;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
-use App\Slack\Response\Response;
 
 readonly class UnrecognisedQueueResponseFactory
 {
     public function __construct(
         private QueueRepositoryInterface $queueRepository,
-    ) {}
+    ) {
+    }
 
     public function create(string $queueName, string $domain, string $userId): SlackInteractionResponse
     {
@@ -32,7 +31,7 @@ readonly class UnrecognisedQueueResponseFactory
             new ActionsBlock(
                 $this->getQueueActions($domain, $userId),
                 'unrecognised_queue_action'
-            )
+            ),
         ]);
     }
 

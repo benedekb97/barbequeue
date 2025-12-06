@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Slack\Command\Handler;
+namespace App\Slack\Interaction\Handler;
 
 use App\Service\Queue\Exception\QueueNotFoundException;
 use App\Service\Queue\Exception\UnableToLeaveQueueException;
 use App\Service\Queue\QueueManager;
-use App\Slack\Command\Command;
-use App\Slack\Command\Component\SlackCommand;
-use App\Slack\Command\SubCommand;
+use App\Slack\Interaction\Component\SlackInteraction;
+use App\Slack\Interaction\Interaction;
 use App\Slack\Response\Interaction\Factory\GenericFailureResponseFactory;
 use App\Slack\Response\Interaction\Factory\QueueLeftResponseFactory;
 use App\Slack\Response\Interaction\Factory\UnableToLeaveQueueResponseFactory;
 use App\Slack\Response\Interaction\Factory\UnrecognisedQueueResponseFactory;
 
-readonly class LeaveQueueCommandHandler implements SlackCommandHandlerInterface
+readonly class LeaveQueueInteractionHandler implements SlackInteractionHandlerInterface
 {
     public function __construct(
         private QueueManager $queueManager,
@@ -26,18 +25,18 @@ readonly class LeaveQueueCommandHandler implements SlackCommandHandlerInterface
     ) {
     }
 
-    public function supports(SlackCommand $command): bool
+    public function supports(SlackInteraction $interaction): bool
     {
-        return $command->getCommand() === Command::BBQ && $command->getSubCommand() === SubCommand::LEAVE;
+        return $interaction->getInteraction() === Interaction::LEAVE_QUEUE;
     }
 
-    public function handle(SlackCommand $command): void
+    public function handle(SlackInteraction $interaction): void
     {
         try {
             $queue = $this->queueManager->leaveQueue(
-                $command->getArgument('queue'),
-                $command->getDomain(),
-                $userId = $command->getUserId()
+                $interaction->getValue(),
+                $interaction->getDomain(),
+                $userId = $interaction->getUserId()
             );
 
             $response = $this->queueLeftResponseFactory->create($queue, $userId);
@@ -52,7 +51,7 @@ readonly class LeaveQueueCommandHandler implements SlackCommandHandlerInterface
         } finally {
             $response ??= $this->genericFailureResponseFactory->create();
 
-            $command->setResponse($response);
+            $interaction->setResponse($response);
         }
     }
 }

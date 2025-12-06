@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Queue\Exception;
 
 use App\Entity\Queue;
-use Exception;
 
-class UnableToLeaveQueueException extends Exception
+class UnableToLeaveQueueException extends \Exception
 {
     public function __construct(
         private readonly Queue $queue,

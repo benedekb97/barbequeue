@@ -17,7 +17,8 @@ readonly class QueueManager
     public function __construct(
         private QueueRepositoryInterface $queueRepository,
         private EntityManagerInterface $entityManager,
-    ) {}
+    ) {
+    }
 
     /**
      * @throws QueueNotFoundException
@@ -62,6 +63,7 @@ readonly class QueueManager
             throw new UnableToLeaveQueueException($queue);
         }
 
+        /** @var QueuedUser $queuedUser */
         $queuedUser = $queue->getLastPlace($userId);
 
         $queue->removeQueuedUser($queuedUser);

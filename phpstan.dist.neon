@@ -8,3 +8,6 @@ parameters:
         - tests/Integration
     ignoreErrors:
         - identifier: missingType.iterableValue
+        -
+            identifier: property.unusedType
+            path: src/Entity

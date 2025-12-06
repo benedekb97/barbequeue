@@ -12,6 +12,7 @@ framework:
 
         routing:
             App\Message\SlackCommandMessage: async
+            App\Message\SlackInteractionMessage: async
 
 # when@test:
 #    framework:

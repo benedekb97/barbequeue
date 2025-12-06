@@ -18,8 +18,8 @@ class UnableToLeaveQueueResponseFactory
             new HeaderBlock('Unable to leave the '.$queue->getName().' queue.'),
             new DividerBlock(),
             new SectionBlock(
-                 sprintf('You are not in the %s queue.', $queue->getName())
-            )
+                sprintf('You are not in the %s queue.', $queue->getName())
+            ),
         ]);
     }
 }

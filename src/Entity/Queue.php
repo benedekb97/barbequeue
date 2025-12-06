@@ -32,6 +32,7 @@ class Queue
     #[Column(type: Types::STRING)]
     private ?string $domain = null;
 
+    /** @var Collection<int, QueuedUser> $queuedUsers */
     #[OneToMany(QueuedUser::class, mappedBy: 'queue')]
     private Collection $queuedUsers;
 
@@ -70,6 +71,7 @@ class Queue
         return $this->maximumEntriesPerUser;
     }
 
+    /** @return Collection<int, QueuedUser> */
     public function getQueuedUsers(): Collection
     {
         return $this->queuedUsers;
@@ -95,6 +97,7 @@ class Queue
         return $this;
     }
 
+    /** @return Collection<int, QueuedUser> */
     public function getQueuedUsersByUserId(string $userId): Collection
     {
         return $this->queuedUsers->filter(function (QueuedUser $user) use ($userId) {
@@ -104,6 +107,7 @@ class Queue
 
     public function getFirstPlace(string $userId): ?QueuedUser
     {
+        /** @var QueuedUser[] $users */
         $users = $this->getQueuedUsersByUserId($userId)->toArray();
 
         if (empty($users)) {
@@ -119,6 +123,7 @@ class Queue
 
     public function getLastPlace(string $userId): ?QueuedUser
     {
+        /** @var QueuedUser[] $users */
         $users = $this->getQueuedUsersByUserId($userId)->toArray();
 
         if (empty($users)) {
@@ -135,5 +140,15 @@ class Queue
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getDomain(): ?string
+    {
+        return $this->domain;
+    }
+
+    public function getExpiryMinutes(): ?int
+    {
+        return $this->expiryMinutes;
     }
 }

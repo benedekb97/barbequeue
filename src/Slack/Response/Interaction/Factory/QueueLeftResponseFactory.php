@@ -16,7 +16,7 @@ class QueueLeftResponseFactory
     {
         if (!$queue->canLeave($userId)) {
             return new SlackInteractionResponse([
-                new SectionBlock('You have left the '.$queue->getName().' queue.')
+                new SectionBlock('You have left the '.$queue->getName().' queue.'),
             ]);
         }
 
@@ -31,7 +31,7 @@ class QueueLeftResponseFactory
             }
         }
 
-        $places = array_map(function (int $number){
+        $places = array_map(function (int $number) {
             return $number.$this->getOrdinalSuffix($number);
         }, $places);
 
@@ -44,7 +44,7 @@ class QueueLeftResponseFactory
                     $this->getPlacementString($places),
                     $queue->getName()
                 )
-            )
+            ),
         ]);
     }
 
@@ -58,7 +58,8 @@ class QueueLeftResponseFactory
         };
     }
 
-    private function getPlacementString(array $placements): ?string
+    /** @param array|string[] $placements */
+    private function getPlacementString(array $placements): string
     {
         if (count($placements) === 1) {
             return reset($placements);

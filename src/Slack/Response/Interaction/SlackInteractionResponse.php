@@ -9,7 +9,7 @@ use App\Slack\Message\Component\SlackMessage;
 readonly class SlackInteractionResponse extends SlackMessage
 {
     public function __construct(
-        array $blocks
+        array $blocks,
     ) {
         parent::__construct(text: null, blocks: $blocks);
     }

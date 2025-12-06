@@ -18,12 +18,15 @@ class QueueRepository extends ServiceEntityRepository implements QueueRepository
 
     public function findOneByNameAndDomain(string $name, string $domain): ?Queue
     {
-        return $this->createQueryBuilder('q')
+        /** @var Queue|null $queue */
+        $queue = $this->createQueryBuilder('q')
             ->andWhere('q.name = :name')
             ->andWhere('q.domain = :domain')
             ->setParameter('name', $name)
             ->setParameter('domain', $domain)
             ->getQuery()
             ->getOneOrNullResult();
+
+        return $queue;
     }
 }

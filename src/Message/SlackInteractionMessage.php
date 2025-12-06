@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Message;
+
+use App\Slack\Interaction\Component\SlackInteraction;
+
+readonly class SlackInteractionMessage
+{
+    public function __construct(
+        private SlackInteraction $interaction,
+    ) {
+    }
+
+    public function getInteraction(): SlackInteraction
+    {
+        return $this->interaction;
+    }
+}

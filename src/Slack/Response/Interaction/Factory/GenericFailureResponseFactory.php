@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Slack\Response\Interaction\Factory;
 
-use App\Entity\Queue;
 use App\Slack\Block\Component\SectionBlock;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
 
-class QueueJoinedResponseFactory
+class GenericFailureResponseFactory
 {
-    public function create(Queue $queue): SlackInteractionResponse
+    public function create(): SlackInteractionResponse
     {
         return new SlackInteractionResponse([
-            new SectionBlock('You are now in the '.$queue->getName().' queue.'),
+            new SectionBlock('Something went wrong.'),
         ]);
     }
 }
