@@ -15,6 +15,7 @@ use App\Slack\Command\Handler\SlackCommandHandlerInterface;
 use App\Slack\Command\SubCommand;
 use App\Slack\Response\Command\SlackCommandResponse;
 use App\Slack\Response\Response;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +28,7 @@ class CommandController
         private SlackCommandFactory $commandFactory,
         #[AutowireIterator(SlackCommandHandlerInterface::TAG)]
         private iterable $commandHandlers,
+        private LoggerInterface $logger,
     ) {}
 
     #[Route('/slack/command', methods: [Request::METHOD_POST])]
@@ -35,12 +37,20 @@ class CommandController
         try {
             $command = $this->commandFactory->createFromRequest($request);
         } catch (SubCommandMissingException $exception) {
+            $this->logger->debug($exception->getMessage());
+
             return $this->getSubCommandMissingResponse($exception);
         } catch (InvalidArgumentCountException $exception) {
+            $this->logger->debug($exception->getMessage());
+
             return $this->getInvalidArgumentCountResponse($exception);
         } catch (InvalidSubCommandException $exception) {
+            $this->logger->debug($exception->getMessage());
+
             return $this->getInvalidSubCommandResponse($exception);
-        } catch (ValueError) {
+        } catch (ValueError $error) {
+            $this->logger->debug($error->getMessage());
+
             return $this->getUnrecognisedCommandResponse();
         }
 

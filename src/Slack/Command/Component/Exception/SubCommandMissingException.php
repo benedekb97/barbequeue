@@ -12,7 +12,7 @@ class SubCommandMissingException extends Exception
     public function __construct(
         private readonly Command $command
     ) {
-        parent::__construct();
+        parent::__construct('Sub-command missing from command '.$command->value);
     }
 
     public function getCommand(): Command

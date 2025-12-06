@@ -14,7 +14,9 @@ class InvalidSubCommandException extends Exception
         private readonly Command $command,
         private readonly SubCommand $subCommand
     ) {
-        parent::__construct();
+        parent::__construct(
+            'Sub-command '.$this->subCommand->value.' is not compatible with command '.$command->value
+        );
     }
 
     public function getCommand(): Command
