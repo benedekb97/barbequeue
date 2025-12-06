@@ -15,7 +15,8 @@ readonly class ModalService
     public function __construct(
         private HttpClientInterface $httpClient,
         private string $slackAccessToken,
-    ) {}
+    ) {
+    }
 
     public function createQueueModal(Queue $queue, SlackCommand $command): void
     {

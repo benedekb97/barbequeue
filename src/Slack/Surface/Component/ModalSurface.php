@@ -22,7 +22,8 @@ class ModalSurface extends SlackSurface
         private readonly bool $notifyOnClose = false,
         private readonly bool $clearOnClose = false,
         private readonly bool $submitDisabled = false,
-    ) {}
+    ) {
+    }
 
     public function getType(): Surface
     {

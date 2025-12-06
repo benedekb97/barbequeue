@@ -17,7 +17,8 @@ readonly class OpenQueueAdminModalHandler implements SlackCommandHandlerInterfac
         private QueueRepositoryInterface $queueRepository,
         private UnrecognisedQueueResponseFactory $unrecognisedQueueResponseFactory,
         private ModalService $modalService,
-    ) {}
+    ) {
+    }
 
     public function supports(SlackCommand $command): bool
     {

@@ -24,7 +24,7 @@ readonly class UnrecognisedQueueResponseFactory
         string $queueName,
         string $domain,
         ?string $userId = null,
-        bool $withActions = true
+        bool $withActions = true,
     ): SlackInteractionResponse {
         return new SlackInteractionResponse(array_filter([
             new HeaderBlock(sprintf('Queue \'%s\' does not exist.', $queueName)),
