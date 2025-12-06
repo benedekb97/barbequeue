@@ -20,18 +20,26 @@ readonly class UnrecognisedQueueResponseFactory
     ) {
     }
 
-    public function create(string $queueName, string $domain, string $userId): SlackInteractionResponse
-    {
+    public function create(
+        string $queueName,
+        string $domain,
+        ?string $userId = null,
+        bool $withActions = true
+    ): SlackInteractionResponse {
         return new SlackInteractionResponse([
             new HeaderBlock(sprintf('Queue \'%s\' does not exist.', $queueName)),
             new DividerBlock(),
             new SectionBlock(
-                sprintf("We couldn't find a queue called *%s*. Try these on for size:", $queueName),
+                sprintf(
+                    "We couldn't find a queue called *%s*.%s",
+                    $queueName,
+                    $withActions ? ' Try these on for size:' : ''
+                ),
             ),
-            new ActionsBlock(
+            $withActions ? new ActionsBlock(
                 $this->getQueueActions($domain, $userId),
                 'unrecognised_queue_action'
-            ),
+            ) : null,
         ]);
     }
 

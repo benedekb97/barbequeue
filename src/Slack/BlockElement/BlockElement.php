@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Slack\BlockElement;
 
 use App\Slack\Block\Block;
-use App\Slack\Block\BlockSurface;
+use App\Slack\Surface\Surface;
 
 enum BlockElement: string
 {
@@ -14,7 +14,7 @@ enum BlockElement: string
     case NUMBER_INPUT = 'number_input';
     case PLAIN_TEXT_INPUT = 'plain_text_input';
 
-    public function isApplicable(Block $block, BlockSurface $surface): bool
+    public function isApplicable(Block $block, Surface $surface): bool
     {
         return match ($this) {
             self::BUTTON => match ($block) {
@@ -22,7 +22,7 @@ enum BlockElement: string
                 default => false,
             },
             self::EMAIL_INPUT,
-            self::NUMBER_INPUT => $block === Block::INPUT && $surface === BlockSurface::MODAL,
+            self::NUMBER_INPUT => $block === Block::INPUT && $surface === Surface::MODAL,
             self::PLAIN_TEXT_INPUT => $block === Block::INPUT,
         };
     }

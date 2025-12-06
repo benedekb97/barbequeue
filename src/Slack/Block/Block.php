@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Slack\Block;
 
+use App\Slack\Surface\Surface;
+
 enum Block: string
 {
     case ACTIONS = 'actions';
@@ -14,11 +16,11 @@ enum Block: string
     case SECTION = 'section';
     case TABLE = 'table';
 
-    public function isApplicableOnSurface(BlockSurface $surface): bool
+    public function isApplicableOnSurface(Surface $surface): bool
     {
         return match ($this) {
             self::ACTIONS, self::DIVIDER, self::HEADER, self::INPUT, self::SECTION, => true,
-            self::MARKDOWN, self::TABLE, => $surface === BlockSurface::MESSAGE,
+            self::MARKDOWN, self::TABLE, => $surface === Surface::MESSAGE,
         };
     }
 }

@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Slack\Block;
+namespace App\Slack\Surface;
 
-enum BlockSurface: string
+use App\Slack\Block\Block;
+
+enum Surface: string
 {
     case MODAL = 'modal';
     case MESSAGE = 'message';

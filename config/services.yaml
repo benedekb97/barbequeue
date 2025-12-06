@@ -7,7 +7,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    slack.token: '%env(SLACK_TOKEN)%'
+    slack.access_token: '%env(SLACK_ACCESS_TOKEN)%'
     slack.signing-secret: '%env(SLACK_SIGNING_SECRET)%'
     slack.sign-enabled: '%env(SLACK_SIGN_ENABLED)%'
 
@@ -26,5 +26,9 @@ services:
         arguments:
             $signingSecret: '%slack.signing-secret%'
             $signEnabled: '%slack.sign-enabled%'
+
+    App\Slack\Surface\Service\ModalService:
+        arguments:
+            $slackApiToken: '%slack.access-token%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -31,7 +31,8 @@ enum Command: string
             },
             self::BBQ_ADMIN => match ($subCommand) {
                 null => throw new SubCommandMissingException($this),
-                SubCommand::ADD, SubCommand::LEAVE => ['user'],
+                SubCommand::ADD, SubCommand::REMOVE => ['user'],
+                SubCommand::QUEUE => ['queue'],
                 default => [],
             },
         };
@@ -73,7 +74,7 @@ enum Command: string
     {
         return match ($this) {
             self::BBQ => [SubCommand::JOIN, SubCommand::LEAVE],
-            self::BBQ_ADMIN => [SubCommand::ADD, SubCommand::LEAVE],
+            self::BBQ_ADMIN => [SubCommand::ADD, SubCommand::REMOVE, SubCommand::QUEUE],
         };
     }
 
