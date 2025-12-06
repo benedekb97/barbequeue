@@ -26,7 +26,7 @@ readonly class UnrecognisedQueueResponseFactory
             new HeaderBlock(sprintf('Queue \'%s\' does not exist.', $queueName)),
             new DividerBlock(),
             new SectionBlock(
-                sprintf("We couldn't find a queue called %s. Try these on for size:", $queueName),
+                sprintf("We couldn't find a queue called *%s*. Try these on for size:", $queueName),
             ),
             new ActionsBlock(
                 $this->getQueueActions($domain, $userId),

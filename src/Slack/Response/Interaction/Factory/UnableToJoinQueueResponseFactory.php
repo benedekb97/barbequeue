@@ -19,9 +19,9 @@ class UnableToJoinQueueResponseFactory
             new DividerBlock(),
             new SectionBlock(
                 $queue->getMaximumEntriesPerUser() === 1
-                    ? sprintf('You are already in the %s queue.', $queue->getName())
+                    ? sprintf('You are already in the *%s* queue.', $queue->getName())
                     : sprintf(
-                        'You can only join the %s queue %d times.',
+                        'You can only join the *%s* queue *%d* times.',
                         $queue->getName(),
                         $queue->getMaximumEntriesPerUser()
                     ),
