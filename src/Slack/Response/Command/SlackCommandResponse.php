@@ -11,7 +11,7 @@ readonly class SlackCommandResponse extends SlackMessage
 {
     public function __construct(
         private Response $responseType,
-        string $text,
+        ?string $text,
         ?array $blocks = null,
     ) {
         parent::__construct($text, $blocks);
@@ -20,7 +20,7 @@ readonly class SlackCommandResponse extends SlackMessage
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'response_type' => $this->responseType->value,
+            'response_type' => $this->responseType === Response::EPHEMERAL ? null : $this->responseType->value,
         ]);
     }
 }

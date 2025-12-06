@@ -9,9 +9,9 @@ use App\Repository\QueueRepositoryInterface;
 use App\Slack\Command\Command;
 use App\Slack\Command\Component\SlackCommand;
 use App\Slack\Command\SubCommand;
-use App\Slack\Response\Command\Factory\QueueJoinedResponseFactory;
-use App\Slack\Response\Command\Factory\UnableToJoinQueueResponseFactory;
-use App\Slack\Response\Command\Factory\UnrecognisedQueueResponseFactory;
+use App\Slack\Response\Interaction\Factory\QueueJoinedResponseFactory;
+use App\Slack\Response\Interaction\Factory\UnableToJoinQueueResponseFactory;
+use App\Slack\Response\Interaction\Factory\UnrecognisedQueueResponseFactory;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class JoinQueueCommandHandler implements SlackCommandHandlerInterface

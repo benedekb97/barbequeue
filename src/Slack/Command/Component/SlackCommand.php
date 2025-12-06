@@ -7,10 +7,11 @@ namespace App\Slack\Command\Component;
 use App\Slack\Command\Command;
 use App\Slack\Command\SubCommand;
 use App\Slack\Response\Command\SlackCommandResponse;
+use App\Slack\Response\Interaction\SlackInteractionResponse;
 
 class SlackCommand
 {
-    private ?SlackCommandResponse $response = null;
+    private null|SlackCommandResponse|SlackInteractionResponse $response = null;
 
     public function __construct(
         private readonly Command $command,
@@ -49,12 +50,12 @@ class SlackCommand
         return !isset($this->response);
     }
 
-    public function getResponse(): ?SlackCommandResponse
+    public function getResponse(): null|SlackCommandResponse|SlackInteractionResponse
     {
         return $this->response;
     }
 
-    public function setResponse(?SlackCommandResponse $response): void
+    public function setResponse(null|SlackCommandResponse|SlackInteractionResponse $response): void
     {
         $this->response = $response;
     }

@@ -7,6 +7,7 @@ namespace App\MessageHandler;
 use App\Message\SlackCommandMessage;
 use App\Slack\Command\Handler\SlackCommandHandlerInterface;
 use App\Slack\Response\Command\SlackCommandResponse;
+use App\Slack\Response\Interaction\SlackInteractionResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpClient\Exception\ServerException;
@@ -47,7 +48,7 @@ readonly class SlackCommandMessageHandler
             }
         }
 
-        if (($commandResponse = $command->getResponse()) instanceof SlackCommandResponse) {
+        if (($commandResponse = $command->getResponse()) instanceof SlackInteractionResponse) {
             try {
                 $this->logger->debug(json_encode($commandResponse->toArray()));
 

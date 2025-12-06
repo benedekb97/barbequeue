@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Slack\Response\Command\Factory;
+namespace App\Slack\Response\Interaction\Factory;
 
 use App\Entity\Queue;
 use App\Repository\QueueRepositoryInterface;
@@ -12,6 +12,7 @@ use App\Slack\Block\Component\HeaderBlock;
 use App\Slack\Block\Component\SectionBlock;
 use App\Slack\BlockElement\Component\ButtonBlockElement;
 use App\Slack\Response\Command\SlackCommandResponse;
+use App\Slack\Response\Interaction\SlackInteractionResponse;
 use App\Slack\Response\Response;
 
 readonly class UnrecognisedQueueResponseFactory
@@ -20,23 +21,19 @@ readonly class UnrecognisedQueueResponseFactory
         private QueueRepositoryInterface $queueRepository,
     ) {}
 
-    public function create(string $queueName, string $domain, string $userId): SlackCommandResponse
+    public function create(string $queueName, string $domain, string $userId): SlackInteractionResponse
     {
-        return new SlackCommandResponse(
-            Response::EPHEMERAL,
-            sprintf($header = 'Queue \'%s\' does not exist.', $queueName),
-            [
-                new HeaderBlock($header),
-                new DividerBlock(),
-                new SectionBlock(
-                    sprintf("We couldn't find a queue called %s. Try these on for size:", $queueName),
-                ),
-                new ActionsBlock(
-                    $this->getQueueActions($domain, $userId),
-                    'unrecognised_queue_action'
-                )
-            ]
-        );
+        return new SlackInteractionResponse([
+            new HeaderBlock(sprintf('Queue \'%s\' does not exist.', $queueName)),
+            new DividerBlock(),
+            new SectionBlock(
+                sprintf("We couldn't find a queue called %s. Try these on for size:", $queueName),
+            ),
+            new ActionsBlock(
+                $this->getQueueActions($domain, $userId),
+                'unrecognised_queue_action'
+            )
+        ]);
     }
 
     /** @return array|ButtonBlockElement[] */
