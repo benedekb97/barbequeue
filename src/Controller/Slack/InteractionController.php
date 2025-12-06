@@ -19,6 +19,10 @@ class InteractionController
     #[Route('/slack/interaction', methods: [Request::METHOD_POST])]
     public function __invoke(Request $request): Response
     {
+        $request = new Request(
+            request: json_decode($request->request->get('payload'), true)
+        );
+
         $this->logger->debug(json_encode($request->request->all()));
 
         return new JsonResponse();
