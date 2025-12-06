@@ -29,6 +29,6 @@ services:
 
     App\Slack\Surface\Service\ModalService:
         arguments:
-            $slackApiToken: '%slack.access-token%'
+            $slackAccessToken: '%slack.access-token%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
