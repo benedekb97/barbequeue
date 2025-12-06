@@ -30,6 +30,8 @@ readonly class SlackCommandMessageHandler
         /** @var SlackCommandHandlerInterface $handler */
         foreach ($this->handlers as $handler) {
             if ($handler->supports($command) && $command->isPending()) {
+                $this->logger->debug('Command handled by '.$handler::class);
+
                 $handler->handle($command);
             }
         }
