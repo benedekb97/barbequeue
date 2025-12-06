@@ -12,6 +12,9 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
@@ -51,7 +54,7 @@ readonly class SlackCommandMessageHandler
 
                 $this->logger->debug($response->getContent());
             } catch(ServerException $e) {
-                $this->logger->debug($e->getResponse()->getContent());
+                $this->logger->debug($e->getResponse());
                 $this->logger->debug($e->getMessage());
             } catch (Throwable $e) {
                 $this->logger->debug($e->getMessage());
