@@ -17,10 +17,10 @@ class SlackCommand
         private readonly Command $command,
         /** @var array|string[] $arguments */
         private readonly array $arguments,
-        private string $domain,
-        private string $userId,
-        private string $responseUrl,
-        private string $triggerId,
+        private readonly string $domain,
+        private readonly string $userId,
+        private readonly string $responseUrl,
+        private readonly string $triggerId,
         private readonly ?SubCommand $subCommand = null,
     ) {
     }
