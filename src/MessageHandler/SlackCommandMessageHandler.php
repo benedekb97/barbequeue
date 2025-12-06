@@ -52,7 +52,7 @@ readonly class SlackCommandMessageHandler
                 ]);
 
                 $this->logger->debug($response->getContent());
-            } catch (TransportExceptionInterface $e) {
+            } catch (Throwable $e) {
                 $this->logger->debug($e->getMessage());
                 $this->logger->debug($e::class);
             }
