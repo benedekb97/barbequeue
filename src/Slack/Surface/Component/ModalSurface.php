@@ -31,27 +31,29 @@ class ModalSurface extends SlackSurface
     public function toArray(): array
     {
         return array_filter([
-            'type' => $this->getType()->value,
             'trigger_id' => $this->triggerId,
-            'title' => [
-                'type' => 'plain_text',
-                'text' => $this->title,
-            ],
-            'blocks' => array_map(fn (SlackBlock $block) => $block->toArray(), $this->blocks),
-            'close' => $this->close ? [
-                'type' => 'plain_text',
-                'text' => $this->close,
-            ] : null,
-            'submit' => $this->submit ? [
-                'type' => 'plain_text',
-                'text' => $this->submit,
-            ] : null,
-            'private_metadata' => $this->privateMetadata,
-            'callback_id' => $this->callbackId,
-            'submit_disabled' => $this->submitDisabled,
-            'clear_on_close' => $this->clearOnClose,
-            'notify_on_close' => $this->notifyOnClose,
-            'external_id' => $this->externalId,
+            'view' => array_filter([
+                'type' => $this->getType()->value,
+                'title' => [
+                    'type' => 'plain_text',
+                    'text' => $this->title,
+                ],
+                'blocks' => array_map(fn (SlackBlock $block) => $block->toArray(), $this->blocks),
+                'close' => $this->close ? [
+                    'type' => 'plain_text',
+                    'text' => $this->close,
+                ] : null,
+                'submit' => $this->submit ? [
+                    'type' => 'plain_text',
+                    'text' => $this->submit,
+                ] : null,
+                'private_metadata' => $this->privateMetadata,
+                'callback_id' => $this->callbackId,
+                'submit_disabled' => $this->submitDisabled,
+                'clear_on_close' => $this->clearOnClose,
+                'notify_on_close' => $this->notifyOnClose,
+                'external_id' => $this->externalId,
+            ]),
         ]);
     }
 }
