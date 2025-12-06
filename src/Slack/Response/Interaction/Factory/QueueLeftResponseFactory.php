@@ -9,9 +9,14 @@ use App\Slack\Block\Component\DividerBlock;
 use App\Slack\Block\Component\HeaderBlock;
 use App\Slack\Block\Component\SectionBlock;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
+use Psr\Log\LoggerInterface;
 
 class QueueLeftResponseFactory
 {
+    public function __construct(
+        private LoggerInterface $logger,
+    ) {}
+
     public function create(Queue $queue, string $userId): SlackInteractionResponse
     {
         if (!$queue->canLeave($userId)) {
@@ -20,8 +25,10 @@ class QueueLeftResponseFactory
             ]);
         }
 
-        $allUsers = $queue->getQueuedUsers();
+        $allUsers = $queue->getQueuedUsers()->toArray();
         $queuedPlaces = $queue->getQueuedUsersByUserId($userId);
+
+        $this->logger->debug(implode(' ', array_keys($allUsers)));
 
         $places = [];
 
@@ -30,6 +37,8 @@ class QueueLeftResponseFactory
                 $places[] = $key + 1;
             }
         }
+
+        $this->logger->debug(implode(' ', $places));
 
         $places = array_map(function (int $number){
             return $number.$this->getOrdinalSuffix($number);
