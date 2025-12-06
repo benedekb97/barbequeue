@@ -57,9 +57,12 @@ class Queue
             return true;
         }
 
-        return $this->queuedUsers->filter(function (QueuedUser $user) use ($userId) {
-            return $userId === $user->getUserId();
-        })->count() < $this->maximumEntriesPerUser;
+        return $this->getQueuedUsersByUserId($userId)->count() < $this->maximumEntriesPerUser;
+    }
+
+    public function canLeave(string $userId): bool
+    {
+        return !$this->getQueuedUsersByUserId($userId)->isEmpty();
     }
 
     public function getMaximumEntriesPerUser(): ?int
@@ -80,5 +83,52 @@ class Queue
         }
 
         return $this;
+    }
+
+    public function removeQueuedUser(QueuedUser $queuedUser): static
+    {
+        if ($this->queuedUsers->contains($queuedUser)) {
+            $this->queuedUsers->removeElement($queuedUser);
+            $queuedUser->setQueue(null);
+        }
+
+        return $this;
+    }
+
+    public function getQueuedUsersByUserId(string $userId): Collection
+    {
+        return $this->queuedUsers->filter(function (QueuedUser $user) use ($userId) {
+            return $userId === $user->getUserId();
+        });
+    }
+
+    public function getFirstPlace(string $userId): ?QueuedUser
+    {
+        $users = $this->getQueuedUsersByUserId($userId)->toArray();
+
+        if (empty($users)) {
+            return null;
+        }
+
+        uasort($users, function (QueuedUser $first, QueuedUser $second) {
+            return $first->getCreatedAt() <=> $second->getCreatedAt();
+        });
+
+        return reset($users);
+    }
+
+    public function getLastPlace(string $userId): ?QueuedUser
+    {
+        $users = $this->getQueuedUsersByUserId($userId)->toArray();
+
+        if (empty($users)) {
+            return null;
+        }
+
+        uasort($users, function (QueuedUser $first, QueuedUser $second) {
+            return $second->getCreatedAt() <=> $first->getCreatedAt();
+        });
+
+        return reset($users);
     }
 }
