@@ -64,7 +64,7 @@ class SlackCommandFactory
 
     private function getCommandString(Request $request): string
     {
-        return $request->request->get('command');
+        return trim($request->request->get('command'), '/');
     }
 
     private function getSubCommandString(Request $request): ?string
