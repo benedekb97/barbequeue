@@ -1,0 +1,84 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\UniqueConstraint;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+
+#[Entity]
+#[UniqueConstraint(columns: ['name', 'domain'])]
+class Queue
+{
+    use TimestampableEntity;
+
+    #[Column(type: Types::BIGINT)]
+    #[GeneratedValue]
+    #[Id]
+    private ?int $id = null;
+
+    #[Column(type: Types::STRING)]
+    private ?string $name = null;
+
+    #[Column(type: Types::STRING)]
+    private ?string $domain = null;
+
+    #[OneToMany(QueuedUser::class, mappedBy: 'queue')]
+    private Collection $queuedUsers;
+
+    #[Column(type: Types::INTEGER, nullable: true)]
+    private ?int $expiryMinutes = null;
+
+    #[Column(type: Types::INTEGER, nullable: true)]
+    private ?int $maximumEntriesPerUser = null;
+
+    public function __construct()
+    {
+        $this->queuedUsers = new ArrayCollection();
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function canJoin(string $userId): bool
+    {
+        if (!isset($this->maximumEntriesPerUser)) {
+            return true;
+        }
+
+        return $this->queuedUsers->filter(function (QueuedUser $user) use ($userId) {
+            return $userId === $user->getUserId();
+        })->count() < $this->maximumEntriesPerUser;
+    }
+
+    public function getMaximumEntriesPerUser(): ?int
+    {
+        return $this->maximumEntriesPerUser;
+    }
+
+    public function getQueuedUsers(): Collection
+    {
+        return $this->queuedUsers;
+    }
+
+    public function addQueuedUser(QueuedUser $queuedUser): static
+    {
+        if (!$this->queuedUsers->contains($queuedUser)) {
+            $this->queuedUsers->add($queuedUser);
+            $queuedUser->setQueue($this);
+        }
+
+        return $this;
+    }
+}
