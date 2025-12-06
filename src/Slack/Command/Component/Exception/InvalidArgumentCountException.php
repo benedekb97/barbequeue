@@ -15,7 +15,7 @@ class InvalidArgumentCountException extends Exception
         private readonly ?SubCommand $subCommand
     ) {
         parent::__construct(
-            'Invalid number of arguments provided for command '.$command->value.' '.$subCommand->value
+            'Invalid number of arguments provided for command '.$command->value.' '.$subCommand?->value
         );
     }
 
