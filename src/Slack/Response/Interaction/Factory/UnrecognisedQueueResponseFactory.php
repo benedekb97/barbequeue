@@ -57,7 +57,7 @@ readonly class UnrecognisedQueueResponseFactory
     {
         return new ButtonBlockElement(
             'Join '.$queue->getName().' queue',
-            'join_queue',
+            'join-queue-'.$queue->getId(),
             value: $queue->getName()
         );
     }
@@ -66,7 +66,7 @@ readonly class UnrecognisedQueueResponseFactory
     {
         return new ButtonBlockElement(
             'Leave '.$queue->getName().' queue',
-            'leave_queue',
+            'leave-queue-'.$queue->getId(),
             value: $queue->getName(),
         );
     }

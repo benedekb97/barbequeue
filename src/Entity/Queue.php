@@ -131,4 +131,9 @@ class Queue
 
         return reset($users);
     }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 }
