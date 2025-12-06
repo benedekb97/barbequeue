@@ -39,7 +39,11 @@ class QueueLeftResponseFactory
             new HeaderBlock('You have been removed from your last place in the '.$queue->getName().' queue.'),
             new DividerBlock(),
             new SectionBlock(
-                'You are now '.$this->getPlacementString($places).' in the queue.'
+                sprintf(
+                    'You are now %s in the %s queue.',
+                    $this->getPlacementString($places),
+                    $queue->getName()
+                )
             )
         ]);
     }
