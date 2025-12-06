@@ -64,4 +64,59 @@ enum Command: string
             self::BBQ_ADMIN => [SubCommand::ADD, SubCommand::LEAVE],
         };
     }
+
+    public function getUsage(?SubCommand $subCommand): string
+    {
+        if ($subCommand === null) {
+            return sprintf(
+                '/%s %s %s',
+                $this->value,
+                implode(
+                    ' ',
+                    array_map(
+                        fn (string $argument) => "\{$argument\}",
+                        $this->getRequiredArguments($subCommand)
+                    )
+                ),
+                implode(
+                    ' ',
+                    array_map(
+                        fn (string $argument) => "\{?$argument\}",
+                        $this->getOptionalArguments($subCommand)
+                    )
+                ),
+            );
+        }
+
+        return sprintf(
+            '/%s %s %s %s',
+            $this->value,
+            $subCommand->value,
+            implode(
+                ' ',
+                array_map(
+                    fn (string $argument) => "\{$argument\}",
+                    $this->getRequiredArguments($subCommand)
+                )
+            ),
+            implode(
+                ' ',
+                array_map(
+                    fn (string $argument) => "\{?$argument\}",
+                    $this->getOptionalArguments($subCommand)
+                )
+            )
+        );
+    }
+
+    public function getUsages(): array
+    {
+        $usages = [];
+
+        foreach ($this->getSubCommands() as $subCommand) {
+            $usages[] = $this->getUsage($subCommand);
+        }
+
+        return $usages;
+    }
 }
