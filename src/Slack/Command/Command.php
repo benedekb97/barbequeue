@@ -86,14 +86,14 @@ enum Command: string
                 implode(
                     ' ',
                     array_map(
-                        fn (string $argument) => "\{$argument\}",
+                        fn (string $argument) => '{'.$argument.'}',
                         $this->getRequiredArguments($subCommand)
                     )
                 ),
                 implode(
                     ' ',
                     array_map(
-                        fn (string $argument) => "\{?$argument\}",
+                        fn (string $argument) => '{?'.$argument.'}',
                         $this->getOptionalArguments($subCommand)
                     )
                 ),
@@ -107,14 +107,14 @@ enum Command: string
             implode(
                 ' ',
                 array_map(
-                    fn (string $argument) => "\{$argument\}",
+                    fn (string $argument) => '{'.$argument.'}',
                     $this->getRequiredArguments($subCommand)
                 )
             ),
             implode(
                 ' ',
                 array_map(
-                    fn (string $argument) => "\{?$argument\}",
+                    fn (string $argument) => '{?'.$argument.'}',
                     $this->getOptionalArguments($subCommand)
                 )
             )

@@ -104,7 +104,7 @@ readonly class CommandController
             [
                 new HeaderBlock('Please provide all required arguments /'.$command->value),
                 new DividerBlock(),
-                new SectionBlock('Usage: */'.$command->getUsage($subCommand).'*'),
+                new SectionBlock('Usage: *'.$command->getUsage($subCommand).'*'),
             ]
         );
 
