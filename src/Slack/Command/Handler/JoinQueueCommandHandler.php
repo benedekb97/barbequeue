@@ -40,7 +40,7 @@ readonly class JoinQueueCommandHandler implements SlackCommandHandlerInterface
                 $command->getUserId()
             );
 
-            $response = $this->queueJoinedResponseFactory->create($queue);
+            $response = $this->queueJoinedResponseFactory->create($queue, $command->getUserId());
         } catch (QueueNotFoundException $exception) {
             $response = $this->unrecognisedQueueResponseFactory->create(
                 $exception->getQueueName(),
