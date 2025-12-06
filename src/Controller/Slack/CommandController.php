@@ -56,7 +56,9 @@ readonly class CommandController
 
         $this->messageBus->dispatch(new SlackCommandMessage($command));
 
-        return new SymfonyResponse();
+        return new JsonResponse(
+            new SlackCommandResponse(Response::EPHEMERAL, 'Loading...')->toArray()
+        );
     }
 
     private function getSubCommandMissingResponse(SubCommandMissingException $exception): JsonResponse
