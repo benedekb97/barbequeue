@@ -53,7 +53,7 @@ readonly class SlackCommandMessageHandler
                 $this->logger->debug(json_encode($commandResponse->toArray()));
 
                 $response = $this->httpClient->request('POST', $command->getResponseUrl(), [
-                    'body' => $commandResponse->toArray(),
+                    'body' => json_encode($commandResponse->toArray(), JSON_UNESCAPED_SLASHES),
                     'headers' => [
                         'Content-Type' => 'application/json',
                     ]
