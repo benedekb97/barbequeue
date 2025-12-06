@@ -47,9 +47,28 @@ class Queue
         $this->queuedUsers = new ArrayCollection();
     }
 
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    public function setDomain(?string $domain): static
+    {
+        $this->domain = $domain;
+
+        return $this;
+    }
+
+    public function getDomain(): ?string
+    {
+        return $this->domain;
     }
 
     public function canJoin(string $userId): bool
@@ -64,6 +83,13 @@ class Queue
     public function canLeave(string $userId): bool
     {
         return !$this->getQueuedUsersByUserId($userId)->isEmpty();
+    }
+
+    public function setMaximumEntriesPerUser(?int $maximumEntriesPerUser): static
+    {
+        $this->maximumEntriesPerUser = $maximumEntriesPerUser;
+
+        return $this;
     }
 
     public function getMaximumEntriesPerUser(): ?int
@@ -142,9 +168,11 @@ class Queue
         return $this->id;
     }
 
-    public function getDomain(): ?string
+    public function setExpiryMinutes(?int $expiryMinutes): static
     {
-        return $this->domain;
+        $this->expiryMinutes = $expiryMinutes;
+
+        return $this;
     }
 
     public function getExpiryMinutes(): ?int
