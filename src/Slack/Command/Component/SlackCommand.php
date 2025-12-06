@@ -46,7 +46,7 @@ class SlackCommand
 
     public function isPending(): bool
     {
-        return isset($this->response);
+        return !isset($this->response);
     }
 
     public function getResponse(): ?SlackCommandResponse
