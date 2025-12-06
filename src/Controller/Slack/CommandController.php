@@ -19,6 +19,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 readonly class CommandController
@@ -34,7 +35,7 @@ readonly class CommandController
     }
 
     #[Route('/slack/command', methods: [Request::METHOD_POST])]
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): JsonResponse|SymfonyResponse
     {
         try {
             $command = $this->commandFactory->createFromRequest($request);
@@ -63,7 +64,7 @@ readonly class CommandController
             }
         }
 
-        return new JsonResponse();
+        return new SymfonyResponse();
     }
 
     private function getSubCommandMissingResponse(SubCommandMissingException $exception): JsonResponse
