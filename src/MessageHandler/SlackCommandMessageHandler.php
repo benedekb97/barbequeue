@@ -9,6 +9,7 @@ use App\Slack\Command\Handler\SlackCommandHandlerInterface;
 use App\Slack\Response\Command\SlackCommandResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -46,15 +47,11 @@ readonly class SlackCommandMessageHandler
             try {
                 $response = $this->httpClient->request('POST', $command->getResponseUrl(), [
                     'body' => $response->toArray(),
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                    ]
                 ]);
 
                 $this->logger->debug($response->getContent());
-            } catch (Throwable $e) {
+            } catch (ServerException $e) {
                 $this->logger->debug($e->getMessage());
-                $this->logger->debug($e::class);
             }
         }
     }
