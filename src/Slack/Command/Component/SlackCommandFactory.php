@@ -36,7 +36,15 @@ class SlackCommandFactory
             throw new InvalidArgumentCountException($command, $subCommand);
         }
 
-        return new SlackCommand($command, $arguments, $subCommand);
+        return new SlackCommand(
+            $command,
+            $arguments,
+            $this->getDomain($request),
+            $this->getUserId($request),
+            $this->getResponseUrl($request),
+            $this->getTriggerId($request),
+            $subCommand
+        );
     }
 
     private function getSubCommand(Command $command, Request $request): ?SubCommand
@@ -94,5 +102,25 @@ class SlackCommandFactory
         }
 
         return array_filter($arguments);
+    }
+
+    private function getDomain(Request $request): string
+    {
+        return (string) $request->request->get('team_domain');
+    }
+
+    private function getUserId(Request $request): string
+    {
+        return (string) $request->request->get('user_id');
+    }
+
+    private function getTriggerId(Request $request): string
+    {
+        return (string) $request->request->get('trigger_id');
+    }
+
+    private function getResponseUrl(Request $request): string
+    {
+        return (string) $request->request->get('response_url');
     }
 }

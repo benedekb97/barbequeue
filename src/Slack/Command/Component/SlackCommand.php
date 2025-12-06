@@ -6,15 +6,20 @@ namespace App\Slack\Command\Component;
 
 use App\Slack\Command\Command;
 use App\Slack\Command\SubCommand;
+use App\Slack\Response\Command\SlackCommandResponse;
 
 class SlackCommand
 {
-    private bool $pending = true;
+    private ?SlackCommandResponse $response = null;
 
     public function __construct(
         private readonly Command $command,
         /** @var array|string[] $arguments */
         private readonly array $arguments,
+        private string $domain,
+        private string $userId,
+        private string $responseUrl,
+        private string $triggerId,
         private readonly ?SubCommand $subCommand = null,
     ) {
     }
@@ -41,6 +46,36 @@ class SlackCommand
 
     public function isPending(): bool
     {
-        return $this->pending;
+        return isset($this->response);
+    }
+
+    public function getResponse(): ?SlackCommandResponse
+    {
+        return $this->response;
+    }
+
+    public function setResponse(?SlackCommandResponse $response): void
+    {
+        $this->response = $response;
+    }
+
+    public function getDomain(): string
+    {
+        return $this->domain;
+    }
+
+    public function getUserId(): string
+    {
+        return $this->userId;
+    }
+
+    public function getResponseUrl(): string
+    {
+        return $this->responseUrl;
+    }
+
+    public function getTriggerId(): string
+    {
+        return $this->triggerId;
     }
 }
