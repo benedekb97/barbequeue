@@ -64,11 +64,7 @@ class SlackCommandFactory
 
     private function getCommandString(Request $request): string
     {
-        $requestText = $request->request->get('text');
-
-        $commandParts = explode(' ', $requestText);
-
-        return $commandParts[0];
+        return $request->request->get('command');
     }
 
     private function getSubCommandString(Request $request): ?string
@@ -77,14 +73,14 @@ class SlackCommandFactory
 
         $commandParts = explode(' ', $requestText);
 
-        return $commandParts[1] ?? null;
+        return $commandParts[0] ?? null;
     }
 
     private function getArguments(Request $request, Command $command, ?SubCommand $subCommand): array
     {
         $commandParts = new ArrayCollection(explode(' ', $request->request->get('text')));
 
-        $argumentValues = array_values($commandParts->slice($subCommand === null ? 1 : 2));
+        $argumentValues = array_values($commandParts->slice($subCommand === null ? 0 : 1));
 
         $argumentKeys = $command->getArguments($subCommand);
 
