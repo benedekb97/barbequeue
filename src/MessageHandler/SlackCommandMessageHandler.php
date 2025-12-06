@@ -51,6 +51,7 @@ readonly class SlackCommandMessageHandler
 
                 $this->logger->debug($response->getContent());
             } catch (ServerException $e) {
+                $this->logger->debug($e->getResponse()->getContent());
                 $this->logger->debug($e->getMessage());
             }
         }
