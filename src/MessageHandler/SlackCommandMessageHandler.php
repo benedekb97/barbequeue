@@ -47,10 +47,12 @@ readonly class SlackCommandMessageHandler
             }
         }
 
-        if (($response = $command->getResponse()) instanceof SlackCommandResponse) {
+        if (($commandResponse = $command->getResponse()) instanceof SlackCommandResponse) {
             try {
+                $this->logger->debug(json_encode($commandResponse->toArray()));
+
                 $response = $this->httpClient->request('POST', $command->getResponseUrl(), [
-                    'body' => $response->toArray(),
+                    'body' => $commandResponse->toArray(),
                 ]);
 
                 $this->logger->debug($response->getContent());
