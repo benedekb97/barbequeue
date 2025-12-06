@@ -26,7 +26,7 @@ readonly class UnrecognisedQueueResponseFactory
         ?string $userId = null,
         bool $withActions = true
     ): SlackInteractionResponse {
-        return new SlackInteractionResponse([
+        return new SlackInteractionResponse(array_filter([
             new HeaderBlock(sprintf('Queue \'%s\' does not exist.', $queueName)),
             new DividerBlock(),
             new SectionBlock(
@@ -40,13 +40,17 @@ readonly class UnrecognisedQueueResponseFactory
                 $this->getQueueActions($domain, $userId),
                 'unrecognised_queue_action'
             ) : null,
-        ]);
+        ]));
     }
 
     /** @return array|ButtonBlockElement[] */
-    private function getQueueActions(string $domain, string $userId): array
+    private function getQueueActions(string $domain, ?string $userId): array
     {
         $buttons = [];
+
+        if ($userId === null) {
+            return $buttons;
+        }
 
         $availableQueues = $this->queueRepository->findBy(['domain' => $domain]);
 

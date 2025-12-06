@@ -11,7 +11,7 @@ readonly class SlackMessage
     /** @param array|SlackBlock[]|null $blocks */
     public function __construct(
         private ?string $text,
-        /** @var array|SlackBlock[]|null $blocks */
+        /** @var array|SlackBlock[]|null[]|null $blocks */
         private ?array $blocks,
     ) {
     }
@@ -20,7 +20,7 @@ readonly class SlackMessage
     {
         return array_filter([
             'text' => $this->text,
-            'blocks' => $this->blocks ? array_map(
+            'blocks' => $this->blocks !== null ? array_map(
                 fn (SlackBlock $block) => $block->toArray(),
                 array_filter($this->blocks)
             ) : null,

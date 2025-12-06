@@ -12,6 +12,7 @@ class ModalSurface extends SlackSurface
     public function __construct(
         private readonly string $triggerId,
         private readonly string $title,
+        /** @var SlackBlock[] $blocks */
         private readonly array $blocks,
         private readonly ?string $externalId = null,
         private readonly ?string $close = null,
