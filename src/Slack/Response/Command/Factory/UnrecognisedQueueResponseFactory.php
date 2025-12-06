@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Slack\Response\Command\Factory;
+
+use App\Entity\Queue;
+use App\Repository\QueueRepositoryInterface;
+use App\Slack\Block\Component\ActionsBlock;
+use App\Slack\Block\Component\DividerBlock;
+use App\Slack\Block\Component\HeaderBlock;
+use App\Slack\Block\Component\SectionBlock;
+use App\Slack\BlockElement\Component\ButtonBlockElement;
+use App\Slack\Response\Command\SlackCommandResponse;
+use App\Slack\Response\Response;
+
+readonly class UnrecognisedQueueResponseFactory
+{
+    public function __construct(
+        private QueueRepositoryInterface $queueRepository,
+    ) {}
+
+    public function create(string $queueName, string $domain, string $userId): SlackCommandResponse
+    {
+        return new SlackCommandResponse(
+            Response::EPHEMERAL,
+            sprintf($header = 'Queue \'%s\' does not exist.', $queueName),
+            [
+                new HeaderBlock($header),
+                new DividerBlock(),
+                new SectionBlock(
+                    sprintf("We couldn't find a queue called %s. Try these on for size:", $queueName),
+                ),
+                new ActionsBlock(
+                    $this->getQueueActions($domain, $userId),
+                    'unrecognised_queue_action'
+                )
+            ]
+        );
+    }
+
+    /** @return array|ButtonBlockElement[] */
+    private function getQueueActions(string $domain, string $userId): array
+    {
+        $buttons = [];
+
+        $availableQueues = $this->queueRepository->findBy(['domain' => $domain]);
+
+        /** @var Queue $queue */
+        foreach ($availableQueues as $queue) {
+            $buttons[] = $queue->canJoin($userId)
+                ? $this->createJoinQueueButton($queue)
+                : $this->createLeaveQueueButton($queue);
+        }
+
+        return $buttons;
+    }
+
+    private function createJoinQueueButton(Queue $queue): ButtonBlockElement
+    {
+        return new ButtonBlockElement(
+            'Join '.$queue->getName().' queue',
+            'join_queue',
+            value: $queue->getName()
+        );
+    }
+
+    private function createLeaveQueueButton(Queue $queue): ButtonBlockElement
+    {
+        return new ButtonBlockElement(
+            'Leave '.$queue->getName().' queue',
+            'leave_queue',
+            value: $queue->getName(),
+        );
+    }
+}
