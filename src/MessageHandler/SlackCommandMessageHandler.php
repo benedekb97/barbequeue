@@ -36,36 +36,25 @@ readonly class SlackCommandMessageHandler
     {
         $command = $message->getCommand();
 
-        $this->logger->debug('command '.$command->getCommand()->value);
-        $this->logger->debug('subcommand '.$command->getSubCommand()?->value);
-
         /** @var SlackCommandHandlerInterface $handler */
         foreach ($this->handlers as $handler) {
             if ($handler->supports($command) && $command->isPending()) {
-                $this->logger->debug('Command handled by '.$handler::class);
-
                 $handler->handle($command);
             }
         }
 
         if (($commandResponse = $command->getResponse()) instanceof SlackInteractionResponse) {
             try {
-                $this->logger->debug(json_encode($commandResponse->toArray()));
-
-                $response = $this->httpClient->request('POST', $command->getResponseUrl(), [
+                $this->httpClient->request('POST', $command->getResponseUrl(), [
                     'body' => json_encode($commandResponse->toArray(), JSON_UNESCAPED_SLASHES),
                     'headers' => [
                         'Content-Type' => 'application/json',
                     ]
                 ]);
-
-                $this->logger->debug($response->getContent());
             } catch(ServerException $e) {
                 $response = $e->getResponse();
 
-                if ($response instanceof CurlResponse) {
-                    $this->logger->debug($response->getContent(false));
-                }
+                $this->logger->debug($response->getContent(false));
                 $this->logger->debug($e->getMessage());
             } catch (Throwable $e) {
                 $this->logger->debug($e->getMessage());
