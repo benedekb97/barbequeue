@@ -127,7 +127,7 @@ readonly class ModalService
             NumberInputElement::class => new NumberInputElement(
                 isDecimalAllowed: false,
                 actionId: $fieldKey,
-                initialvalue: $defaultValue !== null ? "$defaultValue" : null,
+                initialValue: $defaultValue !== null ? "$defaultValue" : null,
                 placeholder: $placeholder
             ),
             PlainTextInputElement::class => new PlainTextInputElement(
