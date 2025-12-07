@@ -37,7 +37,6 @@ readonly class ModalService
             'edit-queue-'.$queue->getName().'-'.$command->getUserId(),
             'Cancel',
             'Save',
-            submitDisabled: true,
         );
 
         try {

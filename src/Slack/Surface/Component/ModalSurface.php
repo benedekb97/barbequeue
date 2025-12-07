@@ -21,7 +21,6 @@ class ModalSurface extends SlackSurface
         private readonly ?string $callbackId = null,
         private readonly bool $notifyOnClose = false,
         private readonly bool $clearOnClose = false,
-        private readonly bool $submitDisabled = false,
     ) {
     }
 
@@ -51,7 +50,6 @@ class ModalSurface extends SlackSurface
                 ] : null,
                 'private_metadata' => $this->privateMetadata,
                 'callback_id' => $this->callbackId,
-                'submit_disabled' => $this->submitDisabled,
                 'clear_on_close' => $this->clearOnClose,
                 'notify_on_close' => $this->notifyOnClose,
                 'external_id' => $this->externalId,
