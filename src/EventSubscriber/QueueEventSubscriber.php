@@ -43,7 +43,7 @@ readonly class QueueEventSubscriber implements EventSubscriberInterface
                 : null
         );
 
-        $this->logger->debug('Set expiry time for user to '.$user->getExpiresAt()->toDateTimeString());
+        $this->logger->debug('Set expiry time for user to '.$user->getExpiresAt()?->toDateTimeString() ?? 'null');
 
         $this->entityManager->persist($user);
     }
