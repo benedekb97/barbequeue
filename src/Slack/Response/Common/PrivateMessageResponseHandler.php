@@ -38,7 +38,7 @@ readonly class PrivateMessageResponseHandler
         if ($conversation instanceof ConversationsOpenPostResponse200) {
             $channel = $conversation->getChannel();
 
-            $this->logger->debug($channel);
+            $this->logger->debug(json_encode($channel));
         }
     }
 }
