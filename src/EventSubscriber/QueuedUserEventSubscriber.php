@@ -71,11 +71,11 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $queuedUser = $queue->getFirstPlace()->setExpiresAt(
+        $nextUser = $queue->getFirstPlace()->setExpiresAt(
             CarbonImmutable::now()->addMinutes($queue->getExpiryMinutes())
         );
 
-        $this->entityManager->persist($queuedUser);
+        $this->entityManager->persist($nextUser);
 
         if ($event->isForced()) {
             $this->privateMessageResponseHandler->handle(
