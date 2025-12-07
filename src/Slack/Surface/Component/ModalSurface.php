@@ -30,11 +30,12 @@ class ModalSurface extends SlackSurface
         return Surface::MODAL;
     }
 
-    public function toArray(): array
+    public function toArray(string $slackAccessToken): array
     {
         return array_filter([
+            'token' => $slackAccessToken,
             'trigger_id' => $this->triggerId,
-            'view' => array_filter([
+            'view' => json_encode(array_filter([
                 'type' => $this->getType()->value,
                 'title' => [
                     'type' => 'plain_text',
@@ -55,7 +56,7 @@ class ModalSurface extends SlackSurface
                 'clear_on_close' => $this->clearOnClose,
                 'notify_on_close' => $this->notifyOnClose,
                 'external_id' => $this->externalId,
-            ]),
+            ]), JSON_UNESCAPED_SLASHES),
         ]);
     }
 }

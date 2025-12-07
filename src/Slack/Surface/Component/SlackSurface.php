@@ -10,5 +10,5 @@ abstract class SlackSurface
 {
     abstract public function getType(): Surface;
 
-    abstract public function toArray(): array;
+    abstract public function toArray(string $slackAccessToken): array;
 }
