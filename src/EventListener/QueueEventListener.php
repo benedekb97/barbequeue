@@ -31,5 +31,6 @@ readonly class QueueEventListener
         );
 
         $eventArgs->getObjectManager()->persist($user);
+        $eventArgs->getObjectManager()->flush();
     }
 }

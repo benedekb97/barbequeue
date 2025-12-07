@@ -37,6 +37,7 @@ readonly class QueuedUserEventListener
         );
 
         $eventArgs->getObjectmanager()->persist($queuedUser);
+        $eventArgs->getObjectManager()->flush();
     }
 
     public function handlePrePersist(QueuedUser $queuedUser, PrePersistEventArgs $eventArgs): void
@@ -54,5 +55,8 @@ readonly class QueuedUserEventListener
                 CarbonImmutable::now()->addMinutes($queue->getExpiryMinutes())
             );
         }
+
+        $eventArgs->getObjectmanager()->persist($queuedUser);
+        $eventArgs->getObjectManager()->flush();
     }
 }
