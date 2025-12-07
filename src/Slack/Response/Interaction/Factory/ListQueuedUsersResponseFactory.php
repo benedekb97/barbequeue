@@ -55,10 +55,22 @@ readonly class ListQueuedUsersResponseFactory
                     'type' => 'raw_text',
                     'text' => "$place",
                 ],[
-                    'type' => 'raw_text',
-                    'text' => $user->getUserLink(),
+                    'type' => 'rich_text',
+                    'elements' => [
+                        [
+                            'type' => 'rich_text_section',
+                            'elements' => [
+                                [
+                                    'type' => 'user',
+                                    'user_id' => $user->getUserId(),
+                                ]
+                            ]
+                        ]
+                    ],
                 ]
             ];
+
+            $place++;
         }
     }
 
