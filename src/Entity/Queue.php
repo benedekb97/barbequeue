@@ -179,6 +179,23 @@ class Queue
         return reset($users);
     }
 
+    /** @return QueuedUser[] */
+    public function getSortedUsers(): array
+    {
+        if ($this->queuedUsers->isEmpty()) {
+            return [];
+        }
+
+        /** @var QueuedUser[] $users */
+        $users = $this->queuedUsers->toArray();
+
+        uasort($users, function (QueuedUser $first, QueuedUser $second) {
+            return $first->getCreatedAt() <=> $second->getCreatedAt();
+        });
+
+        return $users;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

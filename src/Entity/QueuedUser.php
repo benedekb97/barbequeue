@@ -72,4 +72,9 @@ class QueuedUser
 
         return $this;
     }
+
+    public function getUserLink(): string
+    {
+        return sprintf('<@%s>', $this->userId);
+    }
 }
