@@ -24,7 +24,7 @@ class QueuedUser
     private ?int $id = null;
 
     #[Column(type: Types::STRING)]
-    private string $userId;
+    private ?string $userId;
 
     #[ManyToOne(targetEntity: Queue::class, inversedBy: 'queuedUsers')]
     private ?Queue $queue = null;
@@ -39,7 +39,7 @@ class QueuedUser
 
     public function getUserId(): string
     {
-        return $this->userId;
+        return $this->userId ?? '';
     }
 
     public function setUserId(string $userId): static
