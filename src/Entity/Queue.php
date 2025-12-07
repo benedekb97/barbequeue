@@ -131,7 +131,7 @@ class Queue
         });
     }
 
-    public function getFirstPlace(string $userId): ?QueuedUser
+    public function getFirstPlaceForUser(string $userId): ?QueuedUser
     {
         /** @var QueuedUser[] $users */
         $users = $this->getQueuedUsersByUserId($userId)->toArray();
@@ -139,6 +139,22 @@ class Queue
         if (empty($users)) {
             return null;
         }
+
+        uasort($users, function (QueuedUser $first, QueuedUser $second) {
+            return $first->getCreatedAt() <=> $second->getCreatedAt();
+        });
+
+        return reset($users);
+    }
+
+    public function getFirstPlace(): ?QueuedUser
+    {
+        if ($this->queuedUsers->isEmpty()) {
+            return null;
+        }
+
+        /** @var QueuedUser[] $users */
+        $users = $this->queuedUsers->toArray();
 
         uasort($users, function (QueuedUser $first, QueuedUser $second) {
             return $first->getCreatedAt() <=> $second->getCreatedAt();

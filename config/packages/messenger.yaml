@@ -11,8 +11,9 @@ framework:
             async: '%env(MESSENGER_TRANSPORT_DSN)%'
 
         routing:
-            App\Message\SlackCommandMessage: async
-            App\Message\SlackInteractionMessage: async
+            App\Message\Slack\SlackCommandMessage: async
+            App\Message\Slack\SlackInteractionMessage: async
+            App\Message\Queue\PopQueuesMessage: sync
 
 # when@test:
 #    framework:

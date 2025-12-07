@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Slack;
 
-use App\Message\SlackInteractionMessage;
+use App\Message\Slack\SlackInteractionMessage;
 use App\Slack\Interaction\Component\SlackInteractionFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

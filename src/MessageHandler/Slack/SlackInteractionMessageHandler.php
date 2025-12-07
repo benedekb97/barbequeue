@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\MessageHandler;
+namespace App\MessageHandler\Slack;
 
-use App\Message\SlackInteractionMessage;
+use App\Message\Slack\SlackInteractionMessage;
 use App\Slack\Interaction\Handler\SlackInteractionHandlerInterface;
 use App\Slack\Response\Common\PrivateMessageResponseHandler;
 use App\Slack\Response\Common\SlackPrivateMessageResponse;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Controller;
 
 use App\Controller\Slack\CommandController;
-use App\Message\SlackCommandMessage;
+use App\Message\Slack\SlackCommandMessage;
 use App\Slack\Command\Command;
 use App\Slack\Command\Component\Exception\InvalidArgumentCountException;
 use App\Slack\Command\Component\Exception\InvalidSubCommandException;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Slack;
 
-use App\Message\SlackCommandMessage;
+use App\Message\Slack\SlackCommandMessage;
 use App\Slack\Block\Component\DividerBlock;
 use App\Slack\Block\Component\HeaderBlock;
 use App\Slack\Block\Component\SectionBlock;

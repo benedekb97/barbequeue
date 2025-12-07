@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\MessageHandler;
+namespace App\MessageHandler\Slack;
 
-use App\Message\SlackCommandMessage;
+use App\Message\Slack\SlackCommandMessage;
 use App\Slack\Command\Handler\SlackCommandHandlerInterface;
 use App\Slack\Response\Interaction\InteractionResponseHandler;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
