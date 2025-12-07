@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Slack\Interaction\Component;
 
 use App\Slack\Interaction\Interaction;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class SlackInteractionFactory
 {
+    public function __construct(private LoggerInterface $logger) {}
+
     public function create(Request $request): SlackInteraction
     {
         $payload = json_decode((string) $request->request->get('payload'), true);
@@ -18,6 +21,8 @@ class SlackInteractionFactory
         }
 
         $request = new Request(request: $payload);
+
+        $this->logger->debug(json_encode($request->request->all()));
 
         return new SlackInteraction(
             $this->getInteraction($request),

@@ -13,7 +13,6 @@ use JoliCode\Slack\ClientFactory;
 use JoliCode\Slack\Exception\SlackErrorResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\ServerException;
-use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
 readonly class ModalService
 {
@@ -40,15 +39,15 @@ readonly class ModalService
         );
 
         try {
-            $response = $this->client->viewsOpen($modal->toArray());
-        } catch (ServerException|HttpExceptionInterface $exception) {
+            $this->client->viewsOpen($modal->toArray());
+        } catch (SlackErrorResponse $exception) {
+            $this->logger->error($exception->getMessage());
+            $this->logger->error(json_encode($exception->getResponseMetadata()));
+        } catch (ServerException $exception) {
             $response = $exception->getResponse();
 
             $this->logger->error($exception->getMessage());
             $this->logger->error($response->getContent(false));
-        } catch (SlackErrorResponse $exception) {
-            $this->logger->error($exception->getMessage());
-            $this->logger->error(json_encode($exception->getResponseMetadata()));
         } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage());
             $this->logger->error($exception::class);
@@ -56,7 +55,5 @@ readonly class ModalService
 
             return;
         }
-
-        $this->logger->debug($response->getContent(false));
     }
 }
