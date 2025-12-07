@@ -15,4 +15,5 @@ enum SubCommand: string
     case ADD = 'add';
     case REMOVE = 'remove';
     case EDIT_QUEUE = 'edit-queue';
+    case POP_QUEUE = 'pop-queue';
 }

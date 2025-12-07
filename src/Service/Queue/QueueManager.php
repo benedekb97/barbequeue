@@ -8,7 +8,6 @@ use App\Entity\Queue;
 use App\Entity\QueuedUser;
 use App\Event\Queue\QueueUpdatedEvent;
 use App\Event\QueuedUser\QueuedUserCreatedEvent;
-use App\Event\QueuedUser\QueuedUserEvent;
 use App\Event\QueuedUser\QueuedUserRemovedEvent;
 use App\Repository\QueueRepositoryInterface;
 use App\Service\Queue\Exception\QueueNotFoundException;
@@ -77,7 +76,7 @@ readonly class QueueManager
 
         $queue->removeQueuedUser($queuedUser);
 
-        $this->eventDispatcher->dispatch(new QueuedUserRemovedEvent($queuedUser));
+        $this->eventDispatcher->dispatch(new QueuedUserRemovedEvent($queuedUser, $queue));
 
         $this->entityManager->remove($queuedUser);
         $this->entityManager->flush();
@@ -100,6 +99,26 @@ readonly class QueueManager
         $this->eventDispatcher->dispatch(new QueueUpdatedEvent($queue));
 
         $this->entityManager->persist($queue);
+        $this->entityManager->flush();
+
+        return $queue;
+    }
+
+    public function popQueue(string $queueName, string $domain): Queue
+    {
+        $queue = $this->queueRepository->findOneByNameAndDomain($queueName, $domain);
+
+        if ($queue === null) {
+            throw new QueueNotFoundException($queueName, $domain, '');
+        }
+
+        $queuedUser = $queue->getFirstPlace();
+
+        $queue->removeQueuedUser($queuedUser);
+
+        $this->eventDispatcher->dispatch(new QueuedUserRemovedEvent($queuedUser, $queue, true));
+
+        $this->entityManager->remove($queuedUser);
         $this->entityManager->flush();
 
         return $queue;

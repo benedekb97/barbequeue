@@ -6,6 +6,8 @@ namespace App\EventSubscriber;
 
 use App\Event\QueuedUser\QueuedUserCreatedEvent;
 use App\Event\QueuedUser\QueuedUserRemovedEvent;
+use App\Slack\Response\Common\Factory\RemovedFromQueueMessageFactory;
+use App\Slack\Response\Common\PrivateMessageResponseHandler;
 use Carbon\CarbonImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -16,6 +18,8 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
+        private PrivateMessageResponseHandler $privateMessageResponseHandler,
+        private RemovedFromQueueMessageFactory $removedFromQueueMessageFactory,
     ) {}
 
     public static function getSubscribedEvents(): array
@@ -49,7 +53,9 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
     {
         $this->logger->debug('Handling pre-remove event for queued user');
 
-        $queue = ($queuedUser = $event->getQueuedUser())->getQueue();
+        $queuedUser = $event->getQueuedUser();
+
+        $queue = $event->getQueue();
 
         $queue->removeQueuedUser($queuedUser);
 
@@ -62,5 +68,11 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
         );
 
         $this->entityManager->persist($queuedUser);
+
+        if ($event->isForced()) {
+            $this->privateMessageResponseHandler->handle(
+                $this->removedFromQueueMessageFactory->create($queuedUser, $queue),
+            );
+        }
     }
 }
