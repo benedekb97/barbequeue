@@ -50,6 +50,7 @@ readonly class ModalService
         } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage());
             $this->logger->error($exception::class);
+            $this->logger->error($exception->getTraceAsString());
 
             return;
         }
