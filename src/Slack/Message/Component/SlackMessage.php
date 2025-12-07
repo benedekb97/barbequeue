@@ -10,9 +10,9 @@ readonly class SlackMessage
 {
     /** @param array|SlackBlock[]|null $blocks */
     public function __construct(
-        private ?string $text,
+        protected ?string $text,
         /** @var array|SlackBlock[]|null[]|null $blocks */
-        private ?array $blocks,
+        protected ?array $blocks,
     ) {
     }
 
