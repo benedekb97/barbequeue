@@ -16,10 +16,6 @@ use Doctrine\ORM\Events;
 #[AsEntityListener(event: Events::prePersist, method: 'handlePrePersist', entity: QueuedUser::class)]
 readonly class QueuedUserEventListener
 {
-    public function __construct(
-        private EntityManagerInterface $entityManager,
-    ) {}
-
     public function handlePreRemove(QueuedUser $queuedUser, PreRemoveEventArgs $eventArgs): void
     {
         $queue = $queuedUser->getQueue();
@@ -34,7 +30,7 @@ readonly class QueuedUserEventListener
             CarbonImmutable::now()->addMinutes($queue->getExpiryMinutes())
         );
 
-        $this->entityManager->persist($queuedUser);
+        $eventArgs->getObjectmanager()->persist($queuedUser);
     }
 
     public function handlePrePersist(QueuedUser $queuedUser, PrePersistEventArgs $eventArgs): void
