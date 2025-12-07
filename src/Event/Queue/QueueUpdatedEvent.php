@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Event;
+namespace App\Event\Queue;
 
 use App\Entity\Queue;
 
-readonly class QueueEvent
+readonly class QueueUpdatedEvent
 {
-    public const string UPDATED = 'updated';
-
     public function __construct(
         private Queue $queue,
     ) {}

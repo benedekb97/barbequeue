@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Event;
+namespace App\Event\QueuedUser;
 
 use App\Entity\QueuedUser;
 
-readonly class QueuedUserEvent
+readonly class QueuedUserRemovedEvent
 {
-    public const string CREATED = 'created';
-    public const string REMOVED = 'removed';
-
     public function __construct(
         private QueuedUser $queuedUser,
     ) {}

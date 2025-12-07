@@ -2,23 +2,29 @@
 
 declare(strict_types=1);
 
-namespace App\EventListener;
+namespace App\EventSubscriber;
 
-use App\Event\QueueEvent;
+use App\Event\Queue\QueueUpdatedEvent;
 use Carbon\CarbonImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-#[AsEventListener(event: QueueEvent::UPDATED, method: 'handleUpdated')]
-readonly class QueueEventListener
+readonly class QueueEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private LoggerInterface $logger,
         private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger,
     ) {}
 
-    public function handleUpdated(QueueEvent $event): void
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            QueueUpdatedEvent::class => 'handleUpdated',
+        ];
+    }
+
+    public function handleUpdated(QueueUpdatedEvent $event): void
     {
         $queue = $event->getQueue();
 

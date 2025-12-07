@@ -6,18 +6,24 @@ namespace App\Service\Queue;
 
 use App\Entity\Queue;
 use App\Entity\QueuedUser;
+use App\Event\Queue\QueueUpdatedEvent;
+use App\Event\QueuedUser\QueuedUserCreatedEvent;
+use App\Event\QueuedUser\QueuedUserEvent;
+use App\Event\QueuedUser\QueuedUserRemovedEvent;
 use App\Repository\QueueRepositoryInterface;
 use App\Service\Queue\Exception\QueueNotFoundException;
 use App\Service\Queue\Exception\UnableToJoinQueueException;
 use App\Service\Queue\Exception\UnableToLeaveQueueException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 readonly class QueueManager
 {
     public function __construct(
         private QueueRepositoryInterface $queueRepository,
         private EntityManagerInterface $entityManager,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -41,6 +47,8 @@ readonly class QueueManager
             ->setUserId($userId);
 
         $queue->addQueuedUser($queuedUser);
+
+        $this->eventDispatcher->dispatch(new QueuedUserCreatedEvent($queuedUser));
 
         $this->entityManager->persist($queuedUser);
         $this->entityManager->flush();
@@ -69,6 +77,8 @@ readonly class QueueManager
 
         $queue->removeQueuedUser($queuedUser);
 
+        $this->eventDispatcher->dispatch(new QueuedUserRemovedEvent($queuedUser));
+
         $this->entityManager->remove($queuedUser);
         $this->entityManager->flush();
 
@@ -86,6 +96,8 @@ readonly class QueueManager
 
         $queue->setMaximumEntriesPerUser($maximumEntriesPerUser)
             ->setExpiryMinutes($expiryMinutes);
+
+        $this->eventDispatcher->dispatch(new QueueUpdatedEvent($queue));
 
         $this->entityManager->persist($queue);
         $this->entityManager->flush();
