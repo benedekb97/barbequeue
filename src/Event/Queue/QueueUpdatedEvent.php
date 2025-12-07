@@ -10,7 +10,8 @@ readonly class QueueUpdatedEvent
 {
     public function __construct(
         private Queue $queue,
-    ) {}
+    ) {
+    }
 
     public function getQueue(): Queue
     {

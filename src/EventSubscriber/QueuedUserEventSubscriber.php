@@ -20,7 +20,8 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
         private LoggerInterface $logger,
         private PrivateMessageResponseHandler $privateMessageResponseHandler,
         private RemovedFromQueueMessageFactory $removedFromQueueMessageFactory,
-    ) {}
+    ) {
+    }
 
     public static function getSubscribedEvents(): array
     {
@@ -78,7 +79,6 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
         if ($nextUser !== null) {
             $this->entityManager->persist($nextUser);
         }
-
 
         if ($event->isNotificationRequired()) {
             $this->privateMessageResponseHandler->handle(

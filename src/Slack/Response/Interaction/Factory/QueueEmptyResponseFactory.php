@@ -13,7 +13,7 @@ readonly class QueueEmptyResponseFactory
     public function create(Queue $queue): SlackInteractionResponse
     {
         return new SlackInteractionResponse([
-            new SectionBlock('The *'.$queue->getName().'* queue is empty!')
+            new SectionBlock('The *'.$queue->getName().'* queue is empty!'),
         ]);
     }
 }

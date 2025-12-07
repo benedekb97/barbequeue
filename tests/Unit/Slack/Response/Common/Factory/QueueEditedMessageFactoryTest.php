@@ -20,7 +20,7 @@ class QueueEditedMessageFactoryTest extends KernelTestCase
     #[Test, DataProvider('provideForItShouldReturnPrivateMessageResponse')]
     public function itShouldReturnPrivateMessageResponse(
         ?int $maximumEntriesPerUser,
-        ?int $expiryMinutes
+        ?int $expiryMinutes,
     ): void {
         $name = 'queue';
         $id = 1;
@@ -86,25 +86,25 @@ class QueueEditedMessageFactoryTest extends KernelTestCase
                 [
                     'type' => 'raw_text',
                     'text' => 'Parameter',
-                ],[
+                ], [
                     'type' => 'raw_text',
                     'text' => 'Value',
                 ],
-            ],[
+            ], [
                 [
                     'type' => 'raw_text',
                     'text' => 'Top of queue expiry (minutes)',
-                ],[
+                ], [
                     'type' => 'raw_text',
-                    'text' => $expiryMinutes ? $expiryMinutes . ' minutes' : 'No expiry',
+                    'text' => $expiryMinutes ? $expiryMinutes.' minutes' : 'No expiry',
                 ],
-            ],[
+            ], [
                 [
                     'type' => 'raw_text',
                     'text' => 'Maximum entries per user',
-                ],[
+                ], [
                     'type' => 'raw_text',
-                    'text' => $maximumEntriesPerUser ? $maximumEntriesPerUser . ' entries' : 'No limit',
+                    'text' => $maximumEntriesPerUser ? $maximumEntriesPerUser.' entries' : 'No limit',
                 ],
             ],
         ], $tableBlock);

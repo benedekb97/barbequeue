@@ -14,7 +14,8 @@ readonly class QueuedUserRemovedEvent
         private Queue $queue,
         private bool $notificationRequired = false,
         private bool $automatic = false,
-    ) {}
+    ) {
+    }
 
     public function getQueuedUser(): QueuedUser
     {

@@ -15,7 +15,8 @@ readonly class QueueEventSubscriber implements EventSubscriberInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
-    ) {}
+    ) {
+    }
 
     public static function getSubscribedEvents(): array
     {
@@ -34,6 +35,7 @@ readonly class QueueEventSubscriber implements EventSubscriberInterface
 
         if ($user === null) {
             $this->logger->debug('No user found to update on queue '.$queue->getName());
+
             return;
         }
 

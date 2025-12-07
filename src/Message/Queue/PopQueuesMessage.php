@@ -6,5 +6,4 @@ namespace App\Message\Queue;
 
 class PopQueuesMessage
 {
-
 }

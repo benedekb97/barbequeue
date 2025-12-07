@@ -19,7 +19,8 @@ readonly class ListQueueCommandHandler implements SlackCommandHandlerInterface
         private UnrecognisedQueueResponseFactory $unrecognisedQueueResponseFactory,
         private QueueEmptyResponseFactory $queueEmptyResponseFactory,
         private ListQueuedUsersResponseFactory $listQueuedUsersResponseFactory,
-    ) {}
+    ) {
+    }
 
     public function supports(SlackCommand $command): bool
     {

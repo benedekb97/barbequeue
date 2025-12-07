@@ -18,7 +18,8 @@ readonly class PopQueuesMessageHandler
         private QueuedUserRepositoryInterface $repository,
         private EntityManagerInterface $entityManager,
         private EventDispatcherInterface $eventDispatcher,
-    ) {}
+    ) {
+    }
 
     public function __invoke(PopQueuesMessage $message): void
     {

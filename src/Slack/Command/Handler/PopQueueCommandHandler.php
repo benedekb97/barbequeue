@@ -18,7 +18,8 @@ readonly class PopQueueCommandHandler implements SlackCommandHandlerInterface
         private QueueManager $queueManager,
         private UnrecognisedQueueResponseFactory $unrecognisedQueueResponseFactory,
         private QueuePoppedResponseFactory $queuePoppedResponseFactory,
-    ) {}
+    ) {
+    }
 
     public function supports(SlackCommand $command): bool
     {

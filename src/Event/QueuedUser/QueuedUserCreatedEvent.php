@@ -10,7 +10,8 @@ readonly class QueuedUserCreatedEvent
 {
     public function __construct(
         private QueuedUser $queuedUser,
-    ) {}
+    ) {
+    }
 
     public function getQueuedUser(): QueuedUser
     {
