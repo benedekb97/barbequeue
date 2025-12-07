@@ -20,7 +20,7 @@ class QueueEditedMessageFactory
             $userId,
             text: null,
             blocks: [
-                new SectionBlock('Queue '. $queue->getName().' edited successfully.'),
+                new SectionBlock('Queue *'. $queue->getName().'* edited successfully.'),
                 new DividerBlock(),
                 new TableBlock([
                     [
@@ -37,7 +37,9 @@ class QueueEditedMessageFactory
                             'text' => 'Top of queue expiry (minutes)',
                         ],[
                             'type' => 'raw_text',
-                            'text' => (string) ($queue->getExpiryMinutes() ?: 'No expiry'),
+                            'text' => $queue->getExpiryMinutes()
+                                ? $queue->getExpiryMinutes() . ' minutes'
+                                : 'No expiry',
                         ]
                     ],[
                         [
@@ -45,7 +47,9 @@ class QueueEditedMessageFactory
                             'text' => 'Maximum entries per user',
                         ],[
                             'type' => 'raw_text',
-                            'text' => (string) ($queue->getMaximumEntriesPerUser() ?: 'No limit'),
+                            'text' => $queue->getMaximumEntriesPerUser()
+                                ? $queue->getMaximumEntriesPerUser() . ' entries'
+                                : 'No limit',
                         ]
                     ]
                 ]),
