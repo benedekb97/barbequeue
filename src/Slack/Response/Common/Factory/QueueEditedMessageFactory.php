@@ -18,9 +18,9 @@ class QueueEditedMessageFactory
     {
         return new SlackPrivateMessageResponse(
             $userId,
-            $message = 'Queue '.$queue->getName().' edited successfully',
-            [
-                new SectionBlock($message),
+            text: null,
+            blocks: [
+                new SectionBlock('Queue '. $queue->getName().' edited successfully.'),
                 new DividerBlock(),
                 new TableBlock([
                     [
