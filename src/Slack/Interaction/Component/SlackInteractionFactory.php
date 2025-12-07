@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Slack\Interaction\Component;
 
 use App\Slack\Interaction\Component\Exception\UnhandledInteractionTypeException;
+use App\Slack\Interaction\Component\Exception\ValueUnchangedException;
 use App\Slack\Interaction\Interaction;
 use App\Slack\Interaction\InteractionArgumentLocation;
 use App\Slack\Interaction\InteractionType;
@@ -36,13 +37,15 @@ class SlackInteractionFactory
                 $this->getDomain($request),
                 $this->getUserId($request),
                 $this->getResponseUrl($request),
-                $this->getValue($request)
+                $this->getValue($request),
+                $this->getTriggerId($request),
             ),
             InteractionType::VIEW_CLOSED, InteractionType::VIEW_SUBMISSION => new SlackViewSubmission(
                 $interaction = $this->getInteraction($request, $type),
                 $this->getDomain($request),
                 $this->getUserId($request),
-                $this->getArguments($request, $interaction)
+                $this->getArguments($request, $interaction),
+                $this->getTriggerId($request),
             ),
             default => throw new UnhandledInteractionTypeException($type),
         };
@@ -117,15 +120,27 @@ class SlackInteractionFactory
         $arguments = [];
 
         foreach ($argumentKeys as $argumentKey) {
-            $arguments[$argumentKey] = match ($interaction->getArgumentLocation($argumentKey)) {
-                InteractionArgumentLocation::STATE => $this->getArgumentFromState($request, $argumentKey),
-                InteractionArgumentLocation::PRIVATE_METADATA => $this->getArgumentFromPrivateMetadata($request, $argumentKey),
-            };
+            try {
+                $arguments[$argumentKey] = match ($interaction->getArgumentLocation($argumentKey)) {
+                    InteractionArgumentLocation::STATE => $this->getArgumentFromState($request, $argumentKey),
+                    InteractionArgumentLocation::PRIVATE_METADATA => $this->getArgumentFromPrivateMetadata($request, $argumentKey),
+                };
+            } catch (ValueUnchangedException) {
+                continue;
+            } catch (UnrecognisedInputElementException $exception) {
+                $this->logger->debug('Received unrecognised input element '.$exception->getInputElementType());
+
+                continue;
+            }
         }
 
         return $arguments;
     }
 
+    /**
+     * @throws UnrecognisedInputElementException
+     * @throws ValueUnchangedException
+     */
     private function getArgumentFromState(Request $request, string $argumentKey): string|int|null
     {
         /** @var array{state: array} $view */
@@ -136,8 +151,12 @@ class SlackInteractionFactory
 
         foreach ($state['values'] as $value) {
             if (array_key_exists($argumentKey, $value)) {
-                /** @var array{type: string, value: string|null} $argumentValue */
+                /** @var array{type: string} $argumentValue */
                 $argumentValue = $value[$argumentKey];
+
+                if (!array_key_exists('value', $argumentValue)) {
+                    throw new ValueUnchangedException;
+                }
 
                 $value = $argumentValue['value'];
 
@@ -169,5 +188,10 @@ class SlackInteractionFactory
         }
 
         return null;
+    }
+
+    private function getTriggerId(Request $request): string
+    {
+        return (string) $request->request->get('trigger_id');
     }
 }

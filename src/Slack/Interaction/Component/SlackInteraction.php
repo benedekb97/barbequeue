@@ -19,6 +19,7 @@ class SlackInteraction
         private readonly string $userId,
         private readonly string $responseUrl,
         private readonly string $value,
+        private readonly string $triggerId,
     ) {
     }
 
@@ -65,5 +66,10 @@ class SlackInteraction
     public function isPending(): bool
     {
         return !isset($this->response);
+    }
+
+    public function getTriggerId(): string
+    {
+        return $this->triggerId;
     }
 }

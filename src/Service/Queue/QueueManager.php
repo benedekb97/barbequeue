@@ -11,6 +11,7 @@ use App\Service\Queue\Exception\QueueNotFoundException;
 use App\Service\Queue\Exception\UnableToJoinQueueException;
 use App\Service\Queue\Exception\UnableToLeaveQueueException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityNotFoundException;
 
 readonly class QueueManager
 {
@@ -72,5 +73,21 @@ readonly class QueueManager
         $this->entityManager->flush();
 
         return $queue;
+    }
+
+    /** @throws EntityNotFoundException */
+    public function editQueue(int $queueId, ?int $maximumEntriesPerUser, ?int $expiryMinutes): void
+    {
+        $queue = $this->queueRepository->find($queueId);
+
+        if ($queue === null) {
+            throw new EntityNotFoundException("Queue with id $queueId not found");
+        }
+
+        $queue->setMaximumEntriesPerUser($maximumEntriesPerUser)
+            ->setExpiryMinutes($expiryMinutes);
+
+        $this->entityManager->persist($queue);
+        $this->entityManager->flush();
     }
 }

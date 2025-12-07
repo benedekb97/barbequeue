@@ -14,6 +14,7 @@ class SlackViewSubmission extends SlackInteraction
         readonly string $domain,
         readonly string $userId,
         private readonly array $arguments,
+        string $triggerId,
     )
     {
         parent::__construct(
@@ -22,7 +23,8 @@ class SlackViewSubmission extends SlackInteraction
             $domain,
             $userId,
             '',
-            ''
+            '',
+            $triggerId
         );
     }
 
@@ -31,7 +33,12 @@ class SlackViewSubmission extends SlackInteraction
         return $this->arguments;
     }
 
-    public function getArgument(string $argument): ?string
+    public function isArgumentProvided(string $argument): bool
+    {
+        return array_key_exists($argument, $this->arguments);
+    }
+
+    public function getArgument(string $argument): null|string|int
     {
         return $this->arguments[$argument] ?? null;
     }

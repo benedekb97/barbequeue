@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Slack\Interaction\Handler;
 
+use App\Service\Queue\QueueManager;
 use App\Slack\BlockElement\Component\NumberInputElement;
 use App\Slack\BlockElement\Component\PlainTextInputElement;
 use App\Slack\Interaction\Component\SlackInteraction;
+use App\Slack\Interaction\Component\SlackViewSubmission;
+use App\Slack\Interaction\Interaction;
 use App\Slack\Interaction\InteractionArgumentLocation;
+use Doctrine\ORM\EntityNotFoundException;
+use Psr\Log\LoggerInterface;
 
 readonly class EditQueueInteractionHandler implements SlackInteractionHandlerInterface
 {
@@ -54,13 +59,30 @@ readonly class EditQueueInteractionHandler implements SlackInteractionHandlerInt
         self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER => 'Leave empty for no limit',
     ];
 
+    public function __construct(
+        private QueueManager $queueManager,
+        private LoggerInterface $logger,
+    ) {}
+
     public function supports(SlackInteraction $interaction): bool
     {
-        return true;
+        return $interaction->getInteraction() === Interaction::EDIT_QUEUE;
     }
 
     public function handle(SlackInteraction $interaction): void
     {
-        // TODO: Implement handle() method.
+        if (!$interaction instanceof SlackViewSubmission) {
+            return;
+        }
+
+        try {
+            $this->queueManager->editQueue(
+                (int) $interaction->getArgument(self::ARGUMENT_QUEUE),
+                $interaction->getArgument(self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER),
+                $interaction->getArgument(self::ARGUMENT_EXPIRY_MINUTES),
+            );
+        } catch (EntityNotFoundException $e) {
+            $this->logger->debug($e->getMessage());
+        }
     }
 }
