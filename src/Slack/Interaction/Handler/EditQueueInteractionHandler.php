@@ -83,6 +83,8 @@ readonly class EditQueueInteractionHandler implements SlackInteractionHandlerInt
             );
         } catch (EntityNotFoundException $e) {
             $this->logger->debug($e->getMessage());
+        } finally {
+            $interaction->setHandled();
         }
     }
 }

@@ -35,7 +35,7 @@ readonly class SlackInteractionMessageHandler
             }
         }
 
-        if ($interaction->isPending()) {
+        if ($interaction->isPending() && !empty($interaction->getResponseUrl())) {
             $this->logger->error('Unhandled interaction: '.$interaction::class);
         }
 

@@ -9,6 +9,8 @@ use App\Slack\Interaction\InteractionType;
 
 class SlackViewSubmission extends SlackInteraction
 {
+    private bool $pending = true;
+
     public function __construct(
         readonly Interaction $interaction,
         readonly string $domain,
@@ -41,5 +43,15 @@ class SlackViewSubmission extends SlackInteraction
     public function getArgument(string $argument): null|string|int
     {
         return $this->arguments[$argument] ?? null;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->pending;
+    }
+
+    public function setHandled(): void
+    {
+        $this->pending = false;
     }
 }
