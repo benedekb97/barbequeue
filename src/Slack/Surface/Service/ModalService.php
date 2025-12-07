@@ -13,6 +13,7 @@ use App\Slack\BlockElement\Component\PlainTextInputElement;
 use App\Slack\BlockElement\Component\SlackBlockElement;
 use App\Slack\Command\Component\SlackCommand;
 use App\Slack\Interaction\Handler\EditQueueInteractionHandler;
+use App\Slack\Surface\Component\Exception\UnrecognisedInputElementException;
 use App\Slack\Surface\Component\ModalSurface;
 use JoliCode\Slack\Api\Client;
 use JoliCode\Slack\ClientFactory;
@@ -104,7 +105,7 @@ readonly class ModalService
 
         return new InputBlock(
             EditQueueInteractionHandler::FIELD_LABEL_MAP[$fieldKey],
-            $this->createBlockElement($fieldKey, $fieldType, $queue->$getter(), $placeholder),
+            $this->createBlockElement($fieldType, $fieldKey, $queue->$getter(), $placeholder),
             dispatchAction: false,
             hint: $hint,
             optional: !$required,
@@ -133,7 +134,8 @@ readonly class ModalService
                 actionId: $fieldKey,
                 initialValue: $defaultValue !== null ? "$defaultValue" : null,
                 placeholder: $placeholder
-            )
+            ),
+            default => throw new UnrecognisedInputElementException($fieldType),
         };
     }
 }
