@@ -33,12 +33,29 @@ readonly class PrivateMessageResponseHandler
         } catch (\Throwable $exception) {
             $this->logger->debug($exception->getMessage());
             $this->logger->debug($exception::class);
+        } finally {
+            $conversation ??= null;
         }
 
-        if ($conversation instanceof ConversationsOpenPostResponse200) {
-            $channel = $conversation->getChannel();
+        if (!$conversation instanceof ConversationsOpenPostResponse200) {
+            return;
+        }
 
-            $this->logger->debug(json_encode($channel));
+        /** @var @array{id: string} $channel */
+        $channel = $conversation->getChannel();
+
+        $channelId = $channel['id'];
+
+        try {
+            $this->client->chatPostMessage(array_merge([
+                'channel' => $channelId
+            ], $response->toArray()));
+        } catch (SlackErrorResponse $exception) {
+            $this->logger->debug($exception->getMessage());
+            $this->logger->debug(json_encode($exception->getResponseMetadata()));
+        } catch (\Throwable $exception) {
+            $this->logger->debug($exception->getMessage());
+            $this->logger->debug($exception::class);
         }
     }
 }
