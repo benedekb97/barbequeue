@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Slack\Surface\Service;
 
 use App\Entity\Queue;
-use App\Slack\Block\Component\SectionBlock;
+use App\Slack\Block\Component\DividerBlock;
+use App\Slack\Block\Component\InputBlock;
+use App\Slack\BlockElement\Component\EmailInputElement;
+use App\Slack\BlockElement\Component\SlackBlockElement;
 use App\Slack\Command\Component\SlackCommand;
+use App\Slack\Interaction\Handler\EditQueueInteractionHandler;
 use App\Slack\Surface\Component\ModalSurface;
 use JoliCode\Slack\Api\Client;
 use JoliCode\Slack\ClientFactory;
@@ -30,12 +34,11 @@ readonly class ModalService
         $modal = new ModalSurface(
             $command->getTriggerId(),
             sprintf('Edit the %s queue', $queue->getName()),
-            [
-                new SectionBlock('test'),
-            ],
+            $this->getEditQueueiNputFields($queue),
             'edit-queue-'.$queue->getName().'-'.$command->getUserId(),
             'Cancel',
             'Save',
+            privateMetadata: json_encode(['queueId' => $queue->getId(), 'action' => 'edit_queue']),
         );
 
         try {
@@ -55,5 +58,69 @@ readonly class ModalService
 
             return;
         }
+    }
+
+    private function getEditQueueInputFields(Queue $queue): array
+    {
+        $requiredFields = EditQueueInteractionHandler::REQUIRED_FIELDS;
+        $optionalFields = EditQueueInteractionHandler::OPTIONAL_ARGUMENTS;
+
+        $blocks = [];
+
+        foreach ($requiredFields as $fieldKey => $fieldType) {
+            if ($fieldType === null) {
+                continue;
+            }
+
+            if (!empty($blocks)) {
+                $blocks[] = new DividerBlock();
+            }
+
+            $blocks[] = $this->getBlockForKey($queue, $fieldKey, $fieldType, true);
+        }
+
+        foreach ($optionalFields as $fieldKey => $fieldType) {
+            if ($fieldType === null) {
+                continue;
+            }
+
+            if (!empty($blocks)) {
+                $blocks[] = new DividerBlock();
+            }
+
+            $blocks[] = $this->getBlockForKey($queue, $fieldKey, $fieldType, false);
+        }
+
+        return $blocks;
+    }
+
+    private function getBlockForKey(Queue $queue, string $fieldKey, string $fieldType, bool $required): InputBlock
+    {
+        $getter = EditQueueInteractionHandler::FIELD_ENTITY_GETTER_MAP[$fieldKey];
+        $placeholder = EditQueueInteractionHandler::FIELD_PLACEHOLDER_MAP[$fieldKey];
+        $hint = EditQueueInteractionHandler::FIELD_HINT_MAP[$fieldKey];
+
+        return new InputBlock(
+            EditQueueInteractionHandler::FIELD_LABEL_MAP[$fieldKey],
+            $this->createBlockElement($fieldKey, $fieldType, $queue->$getter(), $placeholder),
+            dispatchAction: false,
+            hint: $hint,
+            optional: !$required,
+        );
+    }
+
+    private function createBlockElement(
+        string $fieldType,
+        string $fieldKey,
+        string|int|null $defaultValue,
+        string $placeholder
+    ): SlackBlockElement {
+        return match ($fieldType) {
+            EmailInputElement::class => new EmailInputElement(
+                $fieldKey,
+                initialValue: $defaultValue !== null ? "$defaultValue" : null,
+                placeholder: $placeholder
+            )
+        };
     }
 }

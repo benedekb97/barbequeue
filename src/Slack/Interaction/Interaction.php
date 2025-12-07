@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Slack\Interaction;
 
+use App\Slack\Interaction\Handler\EditQueueInteractionHandler;
+
 enum Interaction: string
 {
     private const string REGEX_PATTERN = '/([A-Za-z\-]+)-[0-9]+/';
 
     case JOIN_QUEUE = 'join-queue';
     case LEAVE_QUEUE = 'leave-queue';
+    case EDIT_QUEUE = 'edit-queue';
 
     public static function fromActionId(string $actionId): self
     {
@@ -18,5 +21,26 @@ enum Interaction: string
         preg_match(self::REGEX_PATTERN, $actionId, $matches);
 
         return self::from($matches[1] ?? '');
+    }
+
+    public function getRequiredArguments(): array
+    {
+        return match ($this) {
+            self::EDIT_QUEUE => array_keys(EditQueueInteractionHandler::REQUIRED_ARGUMENTS),
+            default => [],
+        };
+    }
+
+    public function getOptionalArguments(): array
+    {
+        return match ($this) {
+            self::EDIT_QUEUE => array_keys(EditQueueInteractionHandler::OPTIONAL_ARGUMENTS),
+            default => [],
+        };
+    }
+
+    public function getArguments(): array
+    {
+        return array_merge($this->getRequiredArguments(), $this->getOptionalArguments());
     }
 }
