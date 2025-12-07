@@ -4,27 +4,26 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
-use App\Entity\QueuedUser;
+use App\Event\QueuedUserEvent;
 use Carbon\CarbonImmutable;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Event\PrePersistEventArgs;
-use Doctrine\ORM\Event\PreRemoveEventArgs;
-use Doctrine\ORM\Events;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-#[AsEntityListener(event: Events::preRemove, method: 'handlePreRemove', entity: QueuedUser::class)]
-#[AsEntityListener(event: Events::prePersist, method: 'handlePrePersist', entity: QueuedUser::class)]
+#[AsEventListener(event: QueuedUserEvent::CREATED, method: 'handleCreated')]
+#[AsEventListener(event: QueuedUserEvent::REMOVED, method: 'handleRemoved')]
 readonly class QueuedUserEventListener
 {
     public function __construct(
         private LoggerInterface $logger,
+        private EntityManagerInterface $entityManager,
     ) {}
 
-    public function handlePreRemove(QueuedUser $queuedUser, PreRemoveEventArgs $eventArgs): void
+    public function handleRemoved(QueuedUserEvent $event): void
     {
         $this->logger->debug('Handling pre-remove event for queued user');
 
-        $queue = $queuedUser->getQueue();
+        $queue = ($queuedUser = $event->getQueuedUser())->getQueue();
 
         $queue->removeQueuedUser($queuedUser);
 
@@ -36,15 +35,14 @@ readonly class QueuedUserEventListener
             CarbonImmutable::now()->addMinutes($queue->getExpiryMinutes())
         );
 
-        $eventArgs->getObjectmanager()->persist($queuedUser);
-        $eventArgs->getObjectManager()->flush();
+        $this->entityManager->persist($queuedUser);
     }
 
-    public function handlePrePersist(QueuedUser $queuedUser, PrePersistEventArgs $eventArgs): void
+    public function handleCreated(QueuedUserEvent $event): void
     {
         $this->logger->debug('Handling pre persist event for queued user');
 
-        $queue = $queuedUser->getQueue();
+        $queue = ($queuedUser = $event->getQueuedUser())->getQueue();
 
         if ($queue->getExpiryMinutes() === null) {
             return;
@@ -56,7 +54,6 @@ readonly class QueuedUserEventListener
             );
         }
 
-        $eventArgs->getObjectmanager()->persist($queuedUser);
-        $eventArgs->getObjectManager()->flush();
+        $this->entityManager->persist($queuedUser);
     }
 }
