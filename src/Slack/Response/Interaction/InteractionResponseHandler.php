@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Slack\Interaction;
+namespace App\Slack\Response\Interaction;
 
-use App\Slack\Response\Interaction\SlackInteractionResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

@@ -76,7 +76,7 @@ readonly class QueueManager
     }
 
     /** @throws EntityNotFoundException */
-    public function editQueue(int $queueId, ?int $maximumEntriesPerUser, ?int $expiryMinutes): void
+    public function editQueue(int $queueId, ?int $maximumEntriesPerUser, ?int $expiryMinutes): Queue
     {
         $queue = $this->queueRepository->find($queueId);
 
@@ -89,5 +89,7 @@ readonly class QueueManager
 
         $this->entityManager->persist($queue);
         $this->entityManager->flush();
+
+        return $queue;
     }
 }

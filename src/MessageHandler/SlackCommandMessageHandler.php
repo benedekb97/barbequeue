@@ -6,7 +6,7 @@ namespace App\MessageHandler;
 
 use App\Message\SlackCommandMessage;
 use App\Slack\Command\Handler\SlackCommandHandlerInterface;
-use App\Slack\Interaction\InteractionResponseHandler;
+use App\Slack\Response\Interaction\InteractionResponseHandler;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;

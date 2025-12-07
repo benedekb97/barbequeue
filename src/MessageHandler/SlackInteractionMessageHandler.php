@@ -6,7 +6,9 @@ namespace App\MessageHandler;
 
 use App\Message\SlackInteractionMessage;
 use App\Slack\Interaction\Handler\SlackInteractionHandlerInterface;
-use App\Slack\Interaction\InteractionResponseHandler;
+use App\Slack\Response\Common\PrivateMessageResponseHandler;
+use App\Slack\Response\Common\SlackPrivateMessageResponse;
+use App\Slack\Response\Interaction\InteractionResponseHandler;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -22,6 +24,7 @@ readonly class SlackInteractionMessageHandler
         private iterable $handlers,
         private LoggerInterface $logger,
         private InteractionResponseHandler $interactionResponseHandler,
+        private PrivateMessageResponseHandler $privateMessageResponseHandler,
     ) {
     }
 
@@ -41,6 +44,10 @@ readonly class SlackInteractionMessageHandler
 
         if (($response = $interaction->getResponse()) instanceof SlackInteractionResponse) {
             $this->interactionResponseHandler->handle($interaction->getResponseUrl(), $response);
+        }
+
+        if ($response instanceof SlackPrivateMessageResponse) {
+            $this->privateMessageResponseHandler->handle($interaction->getResponse());
         }
     }
 }

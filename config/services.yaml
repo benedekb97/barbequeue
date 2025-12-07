@@ -30,5 +30,9 @@ services:
     App\Slack\Surface\Service\ModalService:
         arguments:
             $slackAccessToken: '%slack.access-token%'
+
+    App\Slack\Response\Common\PrivateMessageResponseHandler:
+        arguments:
+            $slackAccessToken: '%slack.access-token%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

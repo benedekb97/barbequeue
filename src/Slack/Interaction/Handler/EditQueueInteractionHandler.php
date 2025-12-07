@@ -11,6 +11,7 @@ use App\Slack\Interaction\Component\SlackInteraction;
 use App\Slack\Interaction\Component\SlackViewSubmission;
 use App\Slack\Interaction\Interaction;
 use App\Slack\Interaction\InteractionArgumentLocation;
+use App\Slack\Response\Common\Factory\QueueEditedMessageFactory;
 use Doctrine\ORM\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 
@@ -62,6 +63,7 @@ readonly class EditQueueInteractionHandler implements SlackInteractionHandlerInt
     public function __construct(
         private QueueManager $queueManager,
         private LoggerInterface $logger,
+        private QueueEditedMessageFactory $queueEditedMessageFactory,
     ) {}
 
     public function supports(SlackInteraction $interaction): bool
@@ -76,10 +78,14 @@ readonly class EditQueueInteractionHandler implements SlackInteractionHandlerInt
         }
 
         try {
-            $this->queueManager->editQueue(
+            $queue = $this->queueManager->editQueue(
                 (int) $interaction->getArgument(self::ARGUMENT_QUEUE),
                 $interaction->getArgument(self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER),
                 $interaction->getArgument(self::ARGUMENT_EXPIRY_MINUTES),
+            );
+
+            $interaction->setResponse(
+                $this->queueEditedMessageFactory->create($queue, $interaction->getUserId())
             );
         } catch (EntityNotFoundException $e) {
             $this->logger->debug($e->getMessage());

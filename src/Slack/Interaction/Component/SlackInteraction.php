@@ -6,11 +6,12 @@ namespace App\Slack\Interaction\Component;
 
 use App\Slack\Interaction\Interaction;
 use App\Slack\Interaction\InteractionType;
+use App\Slack\Response\Common\SlackPrivateMessageResponse;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
 
 class SlackInteraction
 {
-    private ?SlackInteractionResponse $response = null;
+    private null|SlackInteractionResponse|SlackPrivateMessageResponse $response = null;
 
     public function __construct(
         private readonly InteractionType $type,
@@ -53,12 +54,12 @@ class SlackInteraction
         return $this->value;
     }
 
-    public function setResponse(SlackInteractionResponse $response): void
+    public function setResponse(SlackInteractionResponse|SlackPrivateMessageResponse $response): void
     {
         $this->response = $response;
     }
 
-    public function getResponse(): ?SlackInteractionResponse
+    public function getResponse(): null|SlackInteractionResponse|SlackPrivateMessageResponse
     {
         return $this->response;
     }
