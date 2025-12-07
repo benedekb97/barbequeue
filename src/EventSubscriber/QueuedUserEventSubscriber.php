@@ -68,6 +68,12 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        if ($event->isNotificationRequired()) {
+            $this->privateMessageResponseHandler->handle(
+                $this->removedFromQueueMessageFactory->create($queuedUser, $queue, $event->isAutomatic()),
+            );
+        }
+
         if ($queue->getQueuedUsers()->count() === 0) {
             return;
         }
@@ -78,12 +84,6 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
 
         if ($nextUser !== null) {
             $this->entityManager->persist($nextUser);
-        }
-
-        if ($event->isNotificationRequired()) {
-            $this->privateMessageResponseHandler->handle(
-                $this->removedFromQueueMessageFactory->create($queuedUser, $queue, $event->isAutomatic()),
-            );
         }
     }
 }
