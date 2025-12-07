@@ -13,7 +13,7 @@ use App\Slack\Response\Interaction\SlackInteractionResponse;
 
 class SlackInteraction implements UserTriggeredInteractionInterface
 {
-    private null|SlackInteractionResponse|SlackPrivateMessageResponse|NoResponse $response = null;
+    private SlackInteractionResponse|SlackPrivateMessageResponse|NoResponse|null $response = null;
 
     public function __construct(
         private readonly InteractionType $type,
@@ -61,7 +61,7 @@ class SlackInteraction implements UserTriggeredInteractionInterface
         $this->response = $response;
     }
 
-    public function getResponse(): null|SlackInteractionResponse|SlackPrivateMessageResponse|NoResponse
+    public function getResponse(): SlackInteractionResponse|SlackPrivateMessageResponse|NoResponse|null
     {
         return $this->response;
     }

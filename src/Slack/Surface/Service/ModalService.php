@@ -114,7 +114,7 @@ readonly class ModalService
         string $fieldType,
         string $fieldKey,
         string|int|null $defaultValue,
-        string $placeholder
+        string $placeholder,
     ): SlackBlockElement {
         return match ($fieldType) {
             EmailInputElement::class => new EmailInputElement(

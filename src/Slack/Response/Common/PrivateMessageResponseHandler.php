@@ -25,7 +25,7 @@ readonly class PrivateMessageResponseHandler
     {
         try {
             $conversation = $this->client->conversationsOpen([
-                'users' => $response->getUserId()
+                'users' => $response->getUserId(),
             ]);
         } catch (SlackErrorResponse $exception) {
             $this->logger->debug($exception->getMessage());
@@ -53,7 +53,7 @@ readonly class PrivateMessageResponseHandler
 
         try {
             $this->client->chatPostMessage(array_merge([
-                'channel' => $channelId
+                'channel' => $channelId,
             ], $response->toArray()));
         } catch (SlackErrorResponse $exception) {
             $this->logger->debug($exception->getMessage());

@@ -14,14 +14,13 @@ class SlackViewSubmission extends SlackInteraction implements UserTriggeredInter
 
     /** @param (int|string|null)[] $arguments */
     public function __construct(
-        readonly Interaction $interaction,
-        readonly string $domain,
-        readonly string $userId,
+        public readonly Interaction $interaction,
+        public readonly string $domain,
+        public readonly string $userId,
         /** @var (int|string|null)[] $arguments */
         private readonly array $arguments,
         string $triggerId,
-    )
-    {
+    ) {
         parent::__construct(
             InteractionType::VIEW_SUBMISSION,
             $interaction,
@@ -43,7 +42,7 @@ class SlackViewSubmission extends SlackInteraction implements UserTriggeredInter
         return array_key_exists($argument, $this->arguments);
     }
 
-    public function getArgument(string $argument): null|string|int
+    public function getArgument(string $argument): string|int|null
     {
         return $this->arguments[$argument] ?? null;
     }

@@ -6,5 +6,4 @@ namespace App\Slack\Interaction\Component\Exception;
 
 class ValueUnchangedException extends \Exception
 {
-
 }

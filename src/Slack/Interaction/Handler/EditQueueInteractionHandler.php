@@ -64,7 +64,8 @@ readonly class EditQueueInteractionHandler implements SlackInteractionHandlerInt
         private QueueManager $queueManager,
         private LoggerInterface $logger,
         private QueueEditedMessageFactory $queueEditedMessageFactory,
-    ) {}
+    ) {
+    }
 
     public function supports(SlackInteraction $interaction): bool
     {

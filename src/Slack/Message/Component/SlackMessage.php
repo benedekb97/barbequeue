@@ -21,7 +21,7 @@ readonly class SlackMessage
         return array_filter([
             'text' => $this->text,
             'blocks' => $this->blocks !== null ? array_map(
-                fn (SlackBlock|null $block) => $block?->toArray(),
+                fn (?SlackBlock $block) => $block?->toArray(),
                 array_filter($this->blocks)
             ) : null,
         ]);

@@ -12,9 +12,8 @@ readonly class SlackPrivateMessageResponse extends SlackMessage
     public function __construct(
         private string $userId,
         ?string $text,
-        ?array $blocks
-    )
-    {
+        ?array $blocks,
+    ) {
         parent::__construct($text, $blocks);
     }
 
@@ -28,13 +27,13 @@ readonly class SlackPrivateMessageResponse extends SlackMessage
         return array_filter([
             'blocks' => $this->blocks
                 ? json_encode(array_map(
-                    function (SlackBlock|null $block) {
+                    function (?SlackBlock $block) {
                         return $block?->toArray();
                     },
                     $this->blocks
                 ), JSON_UNESCAPED_SLASHES)
                 : null,
-            'text' => $this->text
+            'text' => $this->text,
         ]);
     }
 }

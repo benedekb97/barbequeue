@@ -12,11 +12,12 @@ use App\Slack\Interaction\InteractionType;
 use App\Slack\Surface\Component\Exception\UnrecognisedInputElementException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use ValueError;
 
 class SlackInteractionFactory
 {
-    public function __construct(private LoggerInterface $logger) {}
+    public function __construct(private LoggerInterface $logger)
+    {
+    }
 
     public function create(Request $request): SlackInteraction
     {
@@ -59,15 +60,13 @@ class SlackInteractionFactory
     private function getInteraction(Request $request, InteractionType $type): Interaction
     {
         $resolver = match ($type) {
-            InteractionType::BLOCK_ACTIONS, InteractionType::MESSAGE_ACTIONS => function (Request $request): Interaction
-            {
+            InteractionType::BLOCK_ACTIONS, InteractionType::MESSAGE_ACTIONS => function (Request $request): Interaction {
                 /** @var array{action_id: string} $action */
                 $action = $request->request->all('actions')[0];
 
                 return Interaction::fromActionId($action['action_id']);
             },
-            InteractionType::VIEW_CLOSED, InteractionType::VIEW_SUBMISSION => function (Request $request): Interaction
-            {
+            InteractionType::VIEW_CLOSED, InteractionType::VIEW_SUBMISSION => function (Request $request): Interaction {
                 /** @var array{private_metadata: string} $view */
                 $view = $request->request->all('view');
 
@@ -76,7 +75,7 @@ class SlackInteractionFactory
 
                 return Interaction::from($metadata['action']);
             },
-            default => fn (): Interaction => throw new ValueError(),
+            default => fn (): Interaction => throw new \ValueError(),
         };
 
         return $resolver($request);
@@ -154,7 +153,7 @@ class SlackInteractionFactory
                 $argumentValue = $value[$argumentKey];
 
                 if (!array_key_exists('value', $argumentValue)) {
-                    throw new ValueUnchangedException;
+                    throw new ValueUnchangedException();
                 }
 
                 $value = $argumentValue['value'];
