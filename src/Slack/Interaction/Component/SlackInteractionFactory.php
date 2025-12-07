@@ -28,8 +28,6 @@ class SlackInteractionFactory
 
         $request = new Request(request: $payload);
 
-        $this->logger->debug(json_encode($request->request->all()));
-
         return match ($type = $this->getInteractionType($request)) {
             InteractionType::BLOCK_ACTIONS, InteractionType::MESSAGE_ACTIONS => new SlackInteraction(
                 $type,
@@ -41,11 +39,11 @@ class SlackInteractionFactory
                 $this->getTriggerId($request),
             ),
             InteractionType::VIEW_CLOSED, InteractionType::VIEW_SUBMISSION => new SlackViewSubmission(
-                $interaction = $this->getInteraction($request, $type),
-                $this->getDomain($request),
-                $this->getUserId($request),
-                $this->getArguments($request, $interaction),
-                $this->getTriggerId($request),
+                interaction: $interaction = $this->getInteraction($request, $type),
+                domain: $this->getDomain($request),
+                userId: $this->getUserId($request),
+                arguments: $this->getArguments($request, $interaction),
+                triggerId: $this->getTriggerId($request),
             ),
             default => throw new UnhandledInteractionTypeException($type),
         };
@@ -113,6 +111,7 @@ class SlackInteractionFactory
         return $action['value'];
     }
 
+    /** @return (string|int|null)[] */
     private function getArguments(Request $request, Interaction $interaction): array
     {
         $argumentKeys = $interaction->getArguments();
@@ -151,7 +150,7 @@ class SlackInteractionFactory
 
         foreach ($state['values'] as $value) {
             if (array_key_exists($argumentKey, $value)) {
-                /** @var array{type: string} $argumentValue */
+                /** @var array{type: string, value?:string|null} $argumentValue */
                 $argumentValue = $value[$argumentKey];
 
                 if (!array_key_exists('value', $argumentValue)) {

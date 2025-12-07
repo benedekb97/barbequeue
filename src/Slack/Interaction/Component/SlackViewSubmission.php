@@ -12,10 +12,12 @@ class SlackViewSubmission extends SlackInteraction implements UserTriggeredInter
 {
     private bool $pending = true;
 
+    /** @param (int|string|null)[] $arguments */
     public function __construct(
         readonly Interaction $interaction,
         readonly string $domain,
         readonly string $userId,
+        /** @var (int|string|null)[] $arguments */
         private readonly array $arguments,
         string $triggerId,
     )
@@ -44,6 +46,17 @@ class SlackViewSubmission extends SlackInteraction implements UserTriggeredInter
     public function getArgument(string $argument): null|string|int
     {
         return $this->arguments[$argument] ?? null;
+    }
+
+    public function getArgumentInteger(string $argument): ?int
+    {
+        $argument = $this->getArgument($argument);
+
+        if ($argument === null) {
+            return null;
+        }
+
+        return (int) $argument;
     }
 
     public function isPending(): bool

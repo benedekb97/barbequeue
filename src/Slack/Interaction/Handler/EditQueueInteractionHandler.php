@@ -79,9 +79,9 @@ readonly class EditQueueInteractionHandler implements SlackInteractionHandlerInt
 
         try {
             $queue = $this->queueManager->editQueue(
-                (int) $interaction->getArgument(self::ARGUMENT_QUEUE),
-                $interaction->getArgument(self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER),
-                $interaction->getArgument(self::ARGUMENT_EXPIRY_MINUTES),
+                (int) $interaction->getArgumentInteger(self::ARGUMENT_QUEUE),
+                $interaction->getArgumentInteger(self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER),
+                $interaction->getArgumentInteger(self::ARGUMENT_EXPIRY_MINUTES),
             );
 
             $interaction->setResponse(

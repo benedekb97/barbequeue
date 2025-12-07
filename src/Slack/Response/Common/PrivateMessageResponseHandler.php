@@ -29,32 +29,40 @@ readonly class PrivateMessageResponseHandler
             ]);
         } catch (SlackErrorResponse $exception) {
             $this->logger->debug($exception->getMessage());
-            $this->logger->debug(json_encode($exception->getResponseMetadata()));
+
+            $metadata = json_encode($exception->getResponseMetadata());
+
+            if ($metadata !== false) {
+                $this->logger->debug($metadata);
+            }
         } catch (\Throwable $exception) {
             $this->logger->debug($exception->getMessage());
             $this->logger->debug($exception::class);
-        } finally {
-            $conversation ??= null;
         }
+
+        $conversation ??= null;
 
         if (!$conversation instanceof ConversationsOpenPostResponse200) {
             return;
         }
 
-        /** @var @array{id: string} $channel */
+        /** @var array{id: string} $channel */
         $channel = $conversation->getChannel();
 
         $channelId = $channel['id'];
 
         try {
-            $this->logger->debug(json_encode($response->toArray()));
-
             $this->client->chatPostMessage(array_merge([
                 'channel' => $channelId
             ], $response->toArray()));
         } catch (SlackErrorResponse $exception) {
             $this->logger->debug($exception->getMessage());
-            $this->logger->debug(json_encode($exception->getResponseMetadata()));
+
+            $metadata = json_encode($exception->getResponseMetadata());
+
+            if ($metadata !== false) {
+                $this->logger->debug($metadata);
+            }
         } catch (\Throwable $exception) {
             $this->logger->debug($exception->getMessage());
             $this->logger->debug($exception::class);

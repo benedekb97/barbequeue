@@ -47,7 +47,7 @@ readonly class SlackInteractionMessageHandler
         }
 
         if ($response instanceof SlackPrivateMessageResponse) {
-            $this->privateMessageResponseHandler->handle($interaction->getResponse());
+            $this->privateMessageResponseHandler->handle($response);
         }
     }
 }

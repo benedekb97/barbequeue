@@ -24,6 +24,7 @@ enum Interaction: string
         return self::from($matches[1] ?? '');
     }
 
+    /** @return string[] */
     public function getRequiredArguments(): array
     {
         return match ($this) {
@@ -32,6 +33,7 @@ enum Interaction: string
         };
     }
 
+    /** @return string[] */
     public function getOptionalArguments(): array
     {
         return match ($this) {
@@ -40,6 +42,7 @@ enum Interaction: string
         };
     }
 
+    /** @return string[] */
     public function getArguments(): array
     {
         return array_merge($this->getRequiredArguments(), $this->getOptionalArguments());

@@ -7,6 +7,7 @@ namespace App\Slack\Surface\Service;
 use App\Entity\Queue;
 use App\Slack\Block\Component\DividerBlock;
 use App\Slack\Block\Component\InputBlock;
+use App\Slack\Block\Component\SlackBlock;
 use App\Slack\BlockElement\Component\EmailInputElement;
 use App\Slack\BlockElement\Component\NumberInputElement;
 use App\Slack\BlockElement\Component\PlainTextInputElement;
@@ -19,6 +20,7 @@ use App\Slack\Surface\Component\ModalSurface;
 use JoliCode\Slack\Api\Client;
 use JoliCode\Slack\ClientFactory;
 use JoliCode\Slack\Exception\SlackErrorResponse;
+use PHPUnit\Util\InvalidJsonException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\ServerException;
 
@@ -35,6 +37,12 @@ readonly class ModalService
 
     public function createQueueModal(Queue $queue, UserTriggeredInteractionInterface $interaction): void
     {
+        $metadata = json_encode(['queue' => $queue->getId(), 'action' => Interaction::EDIT_QUEUE->value]);
+
+        if ($metadata === false) {
+            throw new InvalidJsonException('Could not encode private metadata to json');
+        }
+
         $modal = new ModalSurface(
             $interaction->getTriggerId(),
             sprintf('Edit the %s queue', $queue->getName()),
@@ -42,14 +50,19 @@ readonly class ModalService
             'edit-queue-'.$queue->getName().'-'.$interaction->getUserId(),
             'Cancel',
             'Save',
-            privateMetadata: json_encode(['queue' => $queue->getId(), 'action' => Interaction::EDIT_QUEUE->value]),
+            privateMetadata: $metadata,
         );
 
         try {
             $this->client->viewsOpen($modal->toArray());
         } catch (SlackErrorResponse $exception) {
             $this->logger->error($exception->getMessage());
-            $this->logger->error(json_encode($exception->getResponseMetadata()));
+
+            $metadata = json_encode($exception->getResponseMetadata());
+
+            if ($metadata !== false) {
+                $this->logger->error($metadata);
+            }
         } catch (ServerException $exception) {
             $response = $exception->getResponse();
 
@@ -64,30 +77,14 @@ readonly class ModalService
         }
     }
 
+    /** @return array|SlackBlock[] */
     private function getEditQueueInputFields(Queue $queue): array
     {
-        $requiredFields = EditQueueInteractionHandler::REQUIRED_FIELDS;
         $optionalFields = EditQueueInteractionHandler::OPTIONAL_ARGUMENTS;
 
         $blocks = [];
 
-        foreach ($requiredFields as $fieldKey => $fieldType) {
-            if ($fieldType === null) {
-                continue;
-            }
-
-            if (!empty($blocks)) {
-                $blocks[] = new DividerBlock();
-            }
-
-            $blocks[] = $this->getBlockForKey($queue, $fieldKey, $fieldType, true);
-        }
-
         foreach ($optionalFields as $fieldKey => $fieldType) {
-            if ($fieldType === null) {
-                continue;
-            }
-
             if (!empty($blocks)) {
                 $blocks[] = new DividerBlock();
             }
