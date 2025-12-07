@@ -53,7 +53,7 @@ class QueueEditedMessageFactory
                     new ButtonBlockElement(
                         'Edit',
                         'edit-queue-action-'.$queue->getId(),
-                        value: $queue->getId(),
+                        value: (string) $queue->getId(),
                     )
                 ]),
             ]
