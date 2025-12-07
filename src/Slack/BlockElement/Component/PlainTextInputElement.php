@@ -31,6 +31,6 @@ class PlainTextInputElement extends EmailInputElement
             'multiline' => $this->multiline,
             'min_length' => $this->minLength,
             'max_length' => $this->maxLength,
-        ]));
+        ], fn ($element) => $element !== null));
     }
 }

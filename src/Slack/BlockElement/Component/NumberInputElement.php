@@ -31,6 +31,6 @@ class NumberInputElement extends EmailInputElement
             'is_decimal_allowed' => $this->isDecimalAllowed,
             'min_value' => "$this->minValue",
             'max_value' => "$this->maxValue",
-        ]));
+        ], fn ($element) => $element !== null));
     }
 }

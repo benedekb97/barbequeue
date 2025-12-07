@@ -33,6 +33,6 @@ class EmailInputElement extends SlackBlockElement
                 'text' => $this->placeholder,
                 'emoji' => false,
             ],
-        ]);
+        ], fn ($element) => $element !== null);
     }
 }
