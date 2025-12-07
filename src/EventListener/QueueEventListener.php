@@ -9,12 +9,19 @@ use Carbon\CarbonImmutable;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Psr\Log\LoggerInterface;
 
 #[AsEntityListener(event: Events::preUpdate, method: 'handlePreUpdate', entity: Queue::class)]
-class QueueEventListener
+readonly class QueueEventListener
 {
+    public function __construct(
+        private LoggerInterface $logger,
+    ) {}
+
     public function handlePreUpdate(Queue $queue, PreUpdateEventArgs $eventArgs): void
     {
+        $this->logger->debug('Handling queue update event for queue '.$queue->getName());
+
         $user = $queue->getFirstPlace();
 
         $user->setExpiresAt(
