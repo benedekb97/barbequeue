@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Service\Queue;
 
 use App\Entity\Queue;
 use App\Entity\QueuedUser;
+use App\Event\QueuedUser\QueuedUserCreatedEvent;
 use App\Repository\QueueRepositoryInterface;
 use App\Service\Queue\Exception\QueueNotFoundException;
 use App\Service\Queue\Exception\UnableToJoinQueueException;
@@ -13,6 +14,7 @@ use App\Service\Queue\QueueManager;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 #[CoversClass(QueueManager::class)]
@@ -30,6 +32,7 @@ class QueueManagerTest extends KernelTestCase
         $manager = new QueueManager(
             $repository,
             $this->createStub(EntityManagerInterface::class),
+            $this->createStub(EventDispatcherInterface::class),
         );
 
         $this->expectException(QueueNotFoundException::class);
@@ -60,11 +63,12 @@ class QueueManagerTest extends KernelTestCase
         $repository->expects(self::once())
             ->method('findOneByNameAndDomain')
             ->with($queueName = 'queueName', $domain = 'domain')
-            ->wilLReturn($queue);
+            ->willReturn($queue);
 
         $manager = new QueueManager(
             $repository,
             $this->createStub(EntityManagerInterface::class),
+            $this->createStub(EventDispatcherInterface::class),
         );
 
         $this->expectException(UnableToJoinQueueException::class);
@@ -89,15 +93,25 @@ class QueueManagerTest extends KernelTestCase
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
 
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+
         $queue->expects(self::once())
             ->method('addQueuedUser')
-            ->willReturnCallback(function ($argument) use ($entityManager, $queue) {
+            ->willReturnCallback(function ($argument) use ($entityManager, $queue, $eventDispatcher) {
                 $this->assertInstanceOf(QueuedUser::class, $argument);
 
                 $entityManager->expects(self::once())
                     ->method('persist')
                     ->willReturnCallback(function ($persistArgument) use ($argument) {
                         $this->assertSame($argument, $persistArgument);
+                    });
+
+                $eventDispatcher->expects(self::once())
+                    ->method('dispatch')
+                    ->willReturnCallback(function ($event) use ($argument) {
+                        $this->assertInstanceOf(QueuedUserCreatedEvent::class, $event);
+                        $this->assertNotNull($eventArgument = $event->getQueuedUser());
+                        $this->assertSame($eventArgument, $argument);
                     });
 
                 return $queue;
@@ -112,7 +126,7 @@ class QueueManagerTest extends KernelTestCase
         $entityManager->expects(self::once())
             ->method('flush');
 
-        $manager = new QueueManager($repository, $entityManager);
+        $manager = new QueueManager($repository, $entityManager, $eventDispatcher);
 
         $result = $manager->joinQueue($queueName, $domain, $userId);
 

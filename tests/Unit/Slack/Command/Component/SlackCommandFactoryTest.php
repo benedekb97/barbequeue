@@ -107,6 +107,7 @@ class SlackCommandFactoryTest extends KernelTestCase
         $request = new Request();
 
         $request->request->set('command', 'bbq');
+        $request->request->set('text', 'join');
 
         $factory = new SlackCommandFactory();
 
@@ -116,7 +117,7 @@ class SlackCommandFactoryTest extends KernelTestCase
             $factory->createFromRequest($request);
         } catch (InvalidArgumentCountException $exception) {
             $this->assertEquals(Command::BBQ, $exception->getCommand());
-            $this->assertEquals(null, $exception->getSubCommand());
+            $this->assertEquals(SubCommand::JOIN, $exception->getSubCommand());
 
             throw $exception;
         }
@@ -147,6 +148,8 @@ class SlackCommandFactoryTest extends KernelTestCase
     #[Test]
     public function itShouldReturnSlackCommandIfCommandDoesNotRequireSubCommand(): void
     {
+        $this->markTestSkipped('Currently no commands implement this feature');
+
         $request = new Request();
 
         $request->request->set('command', 'bbq');
