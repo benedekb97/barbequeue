@@ -10,6 +10,7 @@ use App\Slack\Command\Component\SlackCommand;
 use App\Slack\Surface\Component\ModalSurface;
 use JoliCode\Slack\Api\Client;
 use JoliCode\Slack\ClientFactory;
+use JoliCode\Slack\Exception\SlackErrorResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
@@ -22,8 +23,6 @@ readonly class ModalService
         private LoggerInterface $logger,
         string $slackAccessToken,
     ) {
-        $logger->debug($slackAccessToken);
-
         $this->client = ClientFactory::create($slackAccessToken);
     }
 
@@ -48,6 +47,9 @@ readonly class ModalService
 
             $this->logger->error($exception->getMessage());
             $this->logger->error($response->getContent(false));
+        } catch (SlackErrorResponse $exception) {
+            $this->logger->error($exception->getMessage());
+            $this->logger->error(json_encode($exception->getResponseMetadata()));
         } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage());
             $this->logger->error($exception::class);
