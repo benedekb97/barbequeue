@@ -11,7 +11,7 @@ trait WithPlacements
     /** @return array|string[] */
     private function getPlacements(Queue $queue, string $userId): array
     {
-        $allUsers = $queue->getQueuedUsers()->toArray();
+        $allUsers = array_values($queue->getQueuedUsers()->toArray());
         $queuedPlaces = $queue->getQueuedUsersByUserId($userId);
 
         $places = [];
