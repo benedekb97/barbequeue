@@ -13,7 +13,6 @@ use JoliCode\Slack\ClientFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 readonly class ModalService
 {
@@ -23,6 +22,8 @@ readonly class ModalService
         private LoggerInterface $logger,
         string $slackAccessToken,
     ) {
+        $logger->debug($slackAccessToken);
+
         $this->client = ClientFactory::create($slackAccessToken);
     }
 
