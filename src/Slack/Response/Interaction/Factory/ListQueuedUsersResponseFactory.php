@@ -80,8 +80,8 @@ readonly class ListQueuedUsersResponseFactory
             return new SectionBlock(
                 sprintf(
                     '%s has %d minutes left at the front of the queue.',
-                    $queue->getFirstPlace()->getUserLink(),
-                    CarbonImmutable::now()->diffInMinutes($queue->getFirstPlace()->getExpiresAt())
+                    $queue->getFirstPlace()?->getUserLink() ?? '',
+                    CarbonImmutable::now()->diffInMinutes($queue->getFirstPlace()?->getExpiresAt())
                 )
             );
         }

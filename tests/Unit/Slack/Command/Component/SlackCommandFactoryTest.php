@@ -150,6 +150,7 @@ class SlackCommandFactoryTest extends KernelTestCase
     {
         $this->markTestSkipped('Currently no commands implement this feature');
 
+        /** @phpstan-ignore-next-line deadCode.unreachable */
         $request = new Request();
 
         $request->request->set('command', 'bbq');

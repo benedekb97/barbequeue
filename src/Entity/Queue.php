@@ -160,7 +160,7 @@ class Queue
             return $first->getCreatedAt() <=> $second->getCreatedAt();
         });
 
-        return reset($users);
+        return reset($users) ?: null;
     }
 
     public function getLastPlace(string $userId): ?QueuedUser

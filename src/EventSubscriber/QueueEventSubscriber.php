@@ -39,11 +39,11 @@ readonly class QueueEventSubscriber implements EventSubscriberInterface
 
         $user->setExpiresAt(
             ($expiryTime = $queue->getExpiryMinutes())
-                ? CarbonImmutable::createFromInterface($user->getUpdatedAt())->addMinutes($expiryTime)
+                ? CarbonImmutable::parse($user->getUpdatedAt())->addMinutes($expiryTime)
                 : null
         );
 
-        $this->logger->debug('Set expiry time for user to '.$user->getExpiresAt()?->toDateTimeString() ?? 'null');
+        $this->logger->debug('Set expiry time for user to '.($user->getExpiresAt()?->toDateTimeString() ?? 'null'));
 
         $this->entityManager->persist($user);
     }

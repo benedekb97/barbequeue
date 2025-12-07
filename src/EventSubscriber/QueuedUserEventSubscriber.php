@@ -36,7 +36,7 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
 
         $queue = ($queuedUser = $event->getQueuedUser())->getQueue();
 
-        if ($queue->getExpiryMinutes() === null) {
+        if ($queue?->getExpiryMinutes() === null) {
             return;
         }
 
@@ -71,11 +71,14 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $nextUser = $queue->getFirstPlace()->setExpiresAt(
+        $nextUser = $queue->getFirstPlace()?->setExpiresAt(
             CarbonImmutable::now()->addMinutes($queue->getExpiryMinutes())
         );
 
-        $this->entityManager->persist($nextUser);
+        if ($nextUser !== null) {
+            $this->entityManager->persist($nextUser);
+        }
+
 
         if ($event->isNotificationRequired()) {
             $this->privateMessageResponseHandler->handle(

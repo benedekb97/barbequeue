@@ -27,8 +27,14 @@ readonly class PopQueuesMessageHandler
         foreach ($users as $queuedUser) {
             $this->entityManager->remove($queuedUser);
 
+            $queue = $queuedUser->getQueue();
+
+            if ($queue === null) {
+                continue;
+            }
+
             $this->eventDispatcher->dispatch(
-                new QueuedUserRemovedEvent($queuedUser, $queuedUser->getQueue(), true)
+                new QueuedUserRemovedEvent($queuedUser, $queue, true)
             );
         }
 

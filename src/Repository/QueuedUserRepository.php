@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Queue;
 use App\Entity\QueuedUser;
 use Carbon\CarbonImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -19,21 +20,27 @@ class QueuedUserRepository extends ServiceEntityRepository implements QueuedUser
 
     public function findAllQueuesWithExpiredUsers(): array
     {
-        return $this->createQueryBuilder('qu')
+        /** @var Queue[] $result */
+        $result = $this->createQueryBuilder('qu')
             ->select('qu.queue')
             ->distinct()
             ->where('qu.expiredAt <= :now')
             ->setParameter('now', new CarbonImmutable())
             ->getQuery()
             ->getResult();
+
+        return $result;
     }
 
     public function findAllExpired(): array
     {
-        return $this->createQueryBuilder('qu')
+        /** @var QueuedUser[] $result */
+        $result = $this->createQueryBuilder('qu')
             ->where('qu.expiresAt <= :now')
             ->setParameter('now', new CarbonImmutable())
             ->getQuery()
             ->getResult();
+
+        return $result;
     }
 }

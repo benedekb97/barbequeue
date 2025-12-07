@@ -114,6 +114,10 @@ readonly class QueueManager
 
         $queuedUser = $queue->getFirstPlace();
 
+        if ($queuedUser === null) {
+            return $queue;
+        }
+
         $queue->removeQueuedUser($queuedUser);
 
         $this->eventDispatcher->dispatch(new QueuedUserRemovedEvent($queuedUser, $queue, true));
