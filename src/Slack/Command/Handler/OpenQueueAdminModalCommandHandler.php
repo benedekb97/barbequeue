@@ -11,7 +11,7 @@ use App\Slack\Command\SubCommand;
 use App\Slack\Response\Interaction\Factory\UnrecognisedQueueResponseFactory;
 use App\Slack\Surface\Service\ModalService;
 
-readonly class OpenQueueAdminModalHandler implements SlackCommandHandlerInterface
+readonly class OpenQueueAdminModalCommandHandler implements SlackCommandHandlerInterface
 {
     public function __construct(
         private QueueRepositoryInterface $queueRepository,

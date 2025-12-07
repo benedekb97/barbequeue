@@ -13,6 +13,7 @@ enum Interaction: string
     case JOIN_QUEUE = 'join-queue';
     case LEAVE_QUEUE = 'leave-queue';
     case EDIT_QUEUE = 'edit-queue';
+    case EDIT_QUEUE_ACTION = 'edit-queue-action';
 
     public static function fromActionId(string $actionId): self
     {

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Slack\Interaction\Component;
 
+use App\Slack\Common\Component\UserIdAwareInterface;
+use App\Slack\Common\Component\UserTriggeredInteractionInterface;
 use App\Slack\Interaction\Interaction;
 use App\Slack\Interaction\InteractionType;
 use App\Slack\Response\Common\SlackPrivateMessageResponse;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
 
-class SlackInteraction
+class SlackInteraction implements UserTriggeredInteractionInterface
 {
     private null|SlackInteractionResponse|SlackPrivateMessageResponse $response = null;
 

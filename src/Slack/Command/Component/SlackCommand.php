@@ -6,10 +6,11 @@ namespace App\Slack\Command\Component;
 
 use App\Slack\Command\Command;
 use App\Slack\Command\SubCommand;
+use App\Slack\Common\Component\UserTriggeredInteractionInterface;
 use App\Slack\Response\Command\SlackCommandResponse;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
 
-class SlackCommand
+class SlackCommand implements UserTriggeredInteractionInterface
 {
     private SlackCommandResponse|SlackInteractionResponse|null $response = null;
 

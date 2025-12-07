@@ -11,7 +11,7 @@ use App\Slack\BlockElement\Component\EmailInputElement;
 use App\Slack\BlockElement\Component\NumberInputElement;
 use App\Slack\BlockElement\Component\PlainTextInputElement;
 use App\Slack\BlockElement\Component\SlackBlockElement;
-use App\Slack\Command\Component\SlackCommand;
+use App\Slack\Common\Component\UserTriggeredInteractionInterface;
 use App\Slack\Interaction\Handler\EditQueueInteractionHandler;
 use App\Slack\Interaction\Interaction;
 use App\Slack\Surface\Component\Exception\UnrecognisedInputElementException;
@@ -33,13 +33,13 @@ readonly class ModalService
         $this->client = ClientFactory::create($slackAccessToken);
     }
 
-    public function createQueueModal(Queue $queue, SlackCommand $command): void
+    public function createQueueModal(Queue $queue, UserTriggeredInteractionInterface $interaction): void
     {
         $modal = new ModalSurface(
-            $command->getTriggerId(),
+            $interaction->getTriggerId(),
             sprintf('Edit the %s queue', $queue->getName()),
             $this->getEditQueueiNputFields($queue),
-            'edit-queue-'.$queue->getName().'-'.$command->getUserId(),
+            'edit-queue-'.$queue->getName().'-'.$interaction->getUserId(),
             'Cancel',
             'Save',
             privateMetadata: json_encode(['queue' => $queue->getId(), 'action' => Interaction::EDIT_QUEUE->value]),

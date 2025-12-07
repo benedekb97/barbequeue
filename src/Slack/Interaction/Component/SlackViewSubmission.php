@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Slack\Interaction\Component;
 
+use App\Slack\Common\Component\UserTriggeredInteractionInterface;
 use App\Slack\Interaction\Interaction;
 use App\Slack\Interaction\InteractionType;
 
-class SlackViewSubmission extends SlackInteraction
+class SlackViewSubmission extends SlackInteraction implements UserTriggeredInteractionInterface
 {
     private bool $pending = true;
 
