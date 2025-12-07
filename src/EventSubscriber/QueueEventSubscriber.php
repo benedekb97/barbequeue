@@ -39,7 +39,7 @@ readonly class QueueEventSubscriber implements EventSubscriberInterface
 
         $user->setExpiresAt(
             ($expiryTime = $queue->getExpiryMinutes())
-                ? CarbonImmutable::createFromInterface($user->getCreatedAt())->addMinutes($expiryTime)
+                ? CarbonImmutable::createFromInterface($user->getUpdatedAt())->addMinutes($expiryTime)
                 : null
         );
 
