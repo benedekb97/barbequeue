@@ -27,8 +27,8 @@ class EditQueueInteractionHandler implements SlackInteractionHandlerInterface
     ];
 
     public const array FIELD_LABEL_MAP = [
-        self::ARGUMENT_EXPIRY_MINUTES => 'How long before the first person in the queue gets removed (leave empty for no limit)',
-        self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER => 'How many times a person can join the queue (leave empty for no limit)',
+        self::ARGUMENT_EXPIRY_MINUTES => 'How long before the first person in the queue gets removed',
+        self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER => 'How many times a person can join the queue',
     ];
 
     public const array FIELD_ENTITY_GETTER_MAP = [

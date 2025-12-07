@@ -7,6 +7,7 @@ namespace App\Slack\Interaction\Component;
 use App\Slack\Interaction\Component\Exception\UnhandledInteractionTypeException;
 use App\Slack\Interaction\Interaction;
 use App\Slack\Interaction\InteractionType;
+use App\Slack\Surface\Component\Exception\UnrecognisedInputElementException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use ValueError;
@@ -112,6 +113,37 @@ class SlackInteractionFactory
     {
         $argumentKeys = $interaction->getArguments();
 
-        return [];
+        /** @var array{state: array} $view */
+        $view = $request->request->all('view');
+
+        /** @var array{values: array[]} $state */
+        $state = $view['state'];
+
+        $arguments = [];
+
+        foreach ($argumentKeys as $argumentKey) {
+            foreach ($state['values'] as $value) {
+                if (array_key_exists($argumentKey, $value)) {
+                    /** @var array{type: string, value: string|null} $argumentValue */
+                    $argumentValue = $value[$argumentKey];
+
+                    $value = $argumentValue['value'];
+
+                    if ($value === null) {
+                        $arguments[$argumentKey] = null;
+
+                        break;
+                    }
+
+                    $arguments[$argumentKey] = match ($argumentValue['type']) {
+                        'number_input' => intval($argumentValue['value']),
+                        'plain_text_input', 'email_input' => $argumentValue['value'],
+                        default => throw new UnrecognisedInputElementException($argumentValue['type']),
+                    };
+                }
+            }
+        }
+
+        return $arguments;
     }
 }
