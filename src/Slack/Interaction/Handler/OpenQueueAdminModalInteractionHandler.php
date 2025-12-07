@@ -7,10 +7,11 @@ namespace App\Slack\Interaction\Handler;
 use App\Repository\QueueRepositoryInterface;
 use App\Slack\Interaction\Component\SlackInteraction;
 use App\Slack\Interaction\Interaction;
+use App\Slack\Response\Common\NoResponse;
 use App\Slack\Response\Interaction\Factory\UnrecognisedQueueResponseFactory;
 use App\Slack\Surface\Service\ModalService;
 
-class OpenQueueAdminModalInteractionHandler implements SlackInteractionHandlerInterface
+readonly class OpenQueueAdminModalInteractionHandler implements SlackInteractionHandlerInterface
 {
     public function __construct(
         private QueueRepositoryInterface $queueRepository,
@@ -37,5 +38,7 @@ class OpenQueueAdminModalInteractionHandler implements SlackInteractionHandlerIn
         }
 
         $this->modalService->createQueueModal($queue, $interaction);
+
+        $interaction->setResponse(new NoResponse());
     }
 }

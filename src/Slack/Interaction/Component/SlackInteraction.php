@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Slack\Interaction\Component;
 
-use App\Slack\Common\Component\UserIdAwareInterface;
 use App\Slack\Common\Component\UserTriggeredInteractionInterface;
 use App\Slack\Interaction\Interaction;
 use App\Slack\Interaction\InteractionType;
+use App\Slack\Response\Common\NoResponse;
 use App\Slack\Response\Common\SlackPrivateMessageResponse;
 use App\Slack\Response\Interaction\SlackInteractionResponse;
 
 class SlackInteraction implements UserTriggeredInteractionInterface
 {
-    private null|SlackInteractionResponse|SlackPrivateMessageResponse $response = null;
+    private null|SlackInteractionResponse|SlackPrivateMessageResponse|NoResponse $response = null;
 
     public function __construct(
         private readonly InteractionType $type,
@@ -56,12 +56,12 @@ class SlackInteraction implements UserTriggeredInteractionInterface
         return $this->value;
     }
 
-    public function setResponse(SlackInteractionResponse|SlackPrivateMessageResponse $response): void
+    public function setResponse(SlackInteractionResponse|SlackPrivateMessageResponse|NoResponse $response): void
     {
         $this->response = $response;
     }
 
-    public function getResponse(): null|SlackInteractionResponse|SlackPrivateMessageResponse
+    public function getResponse(): null|SlackInteractionResponse|SlackPrivateMessageResponse|NoResponse
     {
         return $this->response;
     }
