@@ -21,7 +21,7 @@ readonly class ModalService
 
     public function __construct(
         private LoggerInterface $logger,
-        private string $slackAccessToken,
+        string $slackAccessToken,
     ) {
         $this->client = ClientFactory::create($slackAccessToken);
     }
@@ -41,7 +41,7 @@ readonly class ModalService
         );
 
         try {
-            $response = $this->client->viewsOpen($modal->toArray($this->slackAccessToken));
+            $response = $this->client->viewsOpen($modal->toArray());
         } catch (ServerException|HttpExceptionInterface $exception) {
             $response = $exception->getResponse();
 
