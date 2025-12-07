@@ -32,7 +32,7 @@ class RemovedFromQueueMessageFactory
             $queuedUser->getUserId(),
             text: null,
             blocks: [
-                new HeaderBlock('You have been removed from your last place in the '.$queue->getName().' queue.'),
+                new HeaderBlock('You have been removed from the first place in the '.$queue->getName().' queue.'),
                 new DividerBlock(),
                 new SectionBlock(
                     sprintf(
