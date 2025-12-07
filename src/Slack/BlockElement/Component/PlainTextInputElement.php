@@ -29,8 +29,8 @@ class PlainTextInputElement extends EmailInputElement
     {
         return array_merge(parent::toArray(), array_filter([
             'multiline' => $this->multiline,
-            'min_length' => $this->minLength,
-            'max_length' => $this->maxLength,
+            'min_length' => $this->minLength ? "$this->minLength" : null,
+            'max_length' => $this->maxLength ? "$this->maxLength" : null,
         ], fn ($element) => $element !== null));
     }
 }

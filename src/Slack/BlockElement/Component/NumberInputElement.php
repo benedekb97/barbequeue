@@ -29,8 +29,8 @@ class NumberInputElement extends EmailInputElement
     {
         return array_merge(parent::toArray(), array_filter([
             'is_decimal_allowed' => $this->isDecimalAllowed,
-            'min_value' => "$this->minValue",
-            'max_value' => "$this->maxValue",
+            'min_value' => $this->minValue ? "$this->minValue" : null,
+            'max_value' => $this->maxValue ? "$this->maxValue" : null,
         ], fn ($element) => $element !== null));
     }
 }
