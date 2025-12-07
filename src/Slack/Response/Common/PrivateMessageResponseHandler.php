@@ -47,6 +47,8 @@ readonly class PrivateMessageResponseHandler
         $channelId = $channel['id'];
 
         try {
+            $this->logger->debug(json_encode($response->toArray()));
+
             $this->client->chatPostMessage(array_merge([
                 'channel' => $channelId
             ], $response->toArray()));
