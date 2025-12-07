@@ -24,11 +24,18 @@ readonly class QueueEventListener
 
         $user = $queue->getFirstPlace();
 
+        if ($user === null) {
+            $this->logger->debug('No user found to update on queue '.$queue->getName());
+            return;
+        }
+
         $user->setExpiresAt(
             ($expiryTime = $queue->getExpiryMinutes())
                 ? CarbonImmutable::createFromInterface($user->getCreatedAt())->addMinutes($expiryTime)
                 : null
         );
+
+        $this->logger->debug('Set expiry time for user to '.$user->getExpiresAt()->toDateTimeString());
 
         $eventArgs->getObjectManager()->persist($user);
         $eventArgs->getObjectManager()->flush();
