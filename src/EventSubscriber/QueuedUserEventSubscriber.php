@@ -77,9 +77,9 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
 
         $this->entityManager->persist($nextUser);
 
-        if ($event->isForced()) {
+        if ($event->isNotificationRequired()) {
             $this->privateMessageResponseHandler->handle(
-                $this->removedFromQueueMessageFactory->create($queuedUser, $queue),
+                $this->removedFromQueueMessageFactory->create($queuedUser, $queue, $event->isAutomatic()),
             );
         }
     }

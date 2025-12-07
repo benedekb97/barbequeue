@@ -12,7 +12,8 @@ readonly class QueuedUserRemovedEvent
     public function __construct(
         private QueuedUser $queuedUser,
         private Queue $queue,
-        private bool $forced = false,
+        private bool $notificationRequired = false,
+        private bool $automatic = false,
     ) {}
 
     public function getQueuedUser(): QueuedUser
@@ -25,8 +26,13 @@ readonly class QueuedUserRemovedEvent
         return $this->queue;
     }
 
-    public function isForced(): bool
+    public function isNotificationRequired(): bool
     {
-        return $this->forced;
+        return $this->notificationRequired;
+    }
+
+    public function isAutomatic(): bool
+    {
+        return $this->automatic;
     }
 }

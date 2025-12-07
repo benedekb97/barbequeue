@@ -16,23 +16,31 @@ class RemovedFromQueueMessageFactory
 {
     use WithPlacements;
 
-    public function create(QueuedUser $queuedUser, Queue $queue): SlackPrivateMessageResponse
+    public function create(QueuedUser $queuedUser, Queue $queue, bool $automatic): SlackPrivateMessageResponse
     {
         if (!$queue->canLeave($queuedUser->getUserId())) {
             return new SlackPrivateMessageResponse(
                 $queuedUser->getUserId(),
                 text: null,
                 blocks: [
-                    new SectionBlock('You have left the '.$queue->getName().' queue.'),
+                    new SectionBlock(
+                        $automatic
+                            ? 'Your time at the front of the '.$queue->getName().' queue is up.'
+                            : 'You have been removed from the front of the '.$queue->getName().' queue.'
+                    ),
                 ]
             );
         }
+
+        $headerMessage = $automatic
+            ? 'Your time at the front of the '.$queue->getName().' queue is up.'
+            : 'You have been removed from the front of the '.$queue->getName().' queue.';
 
         return new SlackPrivateMessageResponse(
             $queuedUser->getUserId(),
             text: null,
             blocks: [
-                new HeaderBlock('You have been removed from the first place in the '.$queue->getName().' queue.'),
+                new HeaderBlock($headerMessage),
                 new DividerBlock(),
                 new SectionBlock(
                     sprintf(
