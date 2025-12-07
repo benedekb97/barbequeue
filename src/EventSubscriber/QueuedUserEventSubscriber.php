@@ -40,6 +40,8 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $this->logger->debug('Count of users in queue: '.$queue->getQueuedUsers()->count());
+
         if ($queuedUser === $queue->getFirstPlace()) {
             $queuedUser->setExpiresAt(
                 CarbonImmutable::now()->addMinutes($queue->getExpiryMinutes())
