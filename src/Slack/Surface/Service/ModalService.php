@@ -8,6 +8,8 @@ use App\Entity\Queue;
 use App\Slack\Block\Component\DividerBlock;
 use App\Slack\Block\Component\InputBlock;
 use App\Slack\BlockElement\Component\EmailInputElement;
+use App\Slack\BlockElement\Component\NumberInputElement;
+use App\Slack\BlockElement\Component\PlainTextInputElement;
 use App\Slack\BlockElement\Component\SlackBlockElement;
 use App\Slack\Command\Component\SlackCommand;
 use App\Slack\Interaction\Handler\EditQueueInteractionHandler;
@@ -117,7 +119,18 @@ readonly class ModalService
     ): SlackBlockElement {
         return match ($fieldType) {
             EmailInputElement::class => new EmailInputElement(
-                $fieldKey,
+                actionId: $fieldKey,
+                initialValue: $defaultValue !== null ? "$defaultValue" : null,
+                placeholder: $placeholder
+            ),
+            NumberInputElement::class => new NumberInputElement(
+                isDecimalAllowed: false,
+                actionId: $fieldKey,
+                initialvalue: $defaultValue !== null ? "$defaultValue" : null,
+                placeholder: $placeholder
+            ),
+            PlainTextInputElement::class => new PlainTextInputElement(
+                actionId: $fieldKey,
                 initialValue: $defaultValue !== null ? "$defaultValue" : null,
                 placeholder: $placeholder
             )
