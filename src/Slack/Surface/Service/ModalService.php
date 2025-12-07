@@ -13,6 +13,7 @@ use App\Slack\BlockElement\Component\PlainTextInputElement;
 use App\Slack\BlockElement\Component\SlackBlockElement;
 use App\Slack\Command\Component\SlackCommand;
 use App\Slack\Interaction\Handler\EditQueueInteractionHandler;
+use App\Slack\Interaction\Interaction;
 use App\Slack\Surface\Component\Exception\UnrecognisedInputElementException;
 use App\Slack\Surface\Component\ModalSurface;
 use JoliCode\Slack\Api\Client;
@@ -41,7 +42,7 @@ readonly class ModalService
             'edit-queue-'.$queue->getName().'-'.$command->getUserId(),
             'Cancel',
             'Save',
-            privateMetadata: json_encode(['queueId' => $queue->getId(), 'action' => 'edit_queue']),
+            privateMetadata: json_encode(['queue' => $queue->getId(), 'action' => Interaction::EDIT_QUEUE->value]),
         );
 
         try {

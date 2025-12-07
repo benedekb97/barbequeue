@@ -6,6 +6,7 @@ namespace App\Slack\Interaction\Component;
 
 use App\Slack\Interaction\Component\Exception\UnhandledInteractionTypeException;
 use App\Slack\Interaction\Interaction;
+use App\Slack\Interaction\InteractionArgumentLocation;
 use App\Slack\Interaction\InteractionType;
 use App\Slack\Surface\Component\Exception\UnrecognisedInputElementException;
 use Psr\Log\LoggerInterface;
@@ -113,37 +114,60 @@ class SlackInteractionFactory
     {
         $argumentKeys = $interaction->getArguments();
 
+        $arguments = [];
+
+        foreach ($argumentKeys as $argumentKey) {
+            $arguments[$argumentKey] = match ($interaction->getArgumentLocation($argumentKey)) {
+                InteractionArgumentLocation::STATE => $this->getArgumentFromState($request, $argumentKey),
+                InteractionArgumentLocation::PRIVATE_METADATA => $this->getArgumentFromPrivateMetadata($request, $argumentKey),
+            };
+        }
+
+        return $arguments;
+    }
+
+    private function getArgumentFromState(Request $request, string $argumentKey): string|int|null
+    {
         /** @var array{state: array} $view */
         $view = $request->request->all('view');
 
         /** @var array{values: array[]} $state */
         $state = $view['state'];
 
-        $arguments = [];
+        foreach ($state['values'] as $value) {
+            if (array_key_exists($argumentKey, $value)) {
+                /** @var array{type: string, value: string|null} $argumentValue */
+                $argumentValue = $value[$argumentKey];
 
-        foreach ($argumentKeys as $argumentKey) {
-            foreach ($state['values'] as $value) {
-                if (array_key_exists($argumentKey, $value)) {
-                    /** @var array{type: string, value: string|null} $argumentValue */
-                    $argumentValue = $value[$argumentKey];
+                $value = $argumentValue['value'];
 
-                    $value = $argumentValue['value'];
-
-                    if ($value === null) {
-                        $arguments[$argumentKey] = null;
-
-                        break;
-                    }
-
-                    $arguments[$argumentKey] = match ($argumentValue['type']) {
-                        'number_input' => intval($argumentValue['value']),
-                        'plain_text_input', 'email_input' => $argumentValue['value'],
-                        default => throw new UnrecognisedInputElementException($argumentValue['type']),
-                    };
+                if ($value === null) {
+                    return null;
                 }
+
+                return match ($argumentValue['type']) {
+                    'number_input' => intval($argumentValue['value']),
+                    'plain_text_input', 'email_input' => $argumentValue['value'],
+                    default => throw new UnrecognisedInputElementException($argumentValue['type']),
+                };
             }
         }
 
-        return $arguments;
+        return null;
+    }
+
+    private function getArgumentFromPrivateMetadata(Request $request, string $argumentKey): string|int|null
+    {
+        /** @var array{private_metadata: string} $view */
+        $view = $request->request->all('view');
+
+        /** @var (string|int|null)[] $metadata */
+        $metadata = json_decode($view['private_metadata'], true);
+
+        if (array_key_exists($argumentKey, $metadata)) {
+            return $metadata[$argumentKey];
+        }
+
+        return null;
     }
 }

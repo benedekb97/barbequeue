@@ -43,4 +43,12 @@ enum Interaction: string
     {
         return array_merge($this->getRequiredArguments(), $this->getOptionalArguments());
     }
+
+    public function getArgumentLocation(string $argument): InteractionArgumentLocation
+    {
+        return match ($this) {
+            self::EDIT_QUEUE => EditQueueInteractionHandler::ARGUMENT_LOCATION_MAP[$argument],
+            default => InteractionArgumentLocation::STATE,
+        };
+    }
 }

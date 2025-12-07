@@ -7,8 +7,9 @@ namespace App\Slack\Interaction\Handler;
 use App\Slack\BlockElement\Component\NumberInputElement;
 use App\Slack\BlockElement\Component\PlainTextInputElement;
 use App\Slack\Interaction\Component\SlackInteraction;
+use App\Slack\Interaction\InteractionArgumentLocation;
 
-class EditQueueInteractionHandler implements SlackInteractionHandlerInterface
+readonly class EditQueueInteractionHandler implements SlackInteractionHandlerInterface
 {
     public const string ARGUMENT_QUEUE = 'queue';
     public const string ARGUMENT_EXPIRY_MINUTES = 'expiry_minutes';
@@ -19,12 +20,19 @@ class EditQueueInteractionHandler implements SlackInteractionHandlerInterface
         ...self::REQUIRED_FIELDS,
     ];
 
-    public const array REQUIRED_FIELDS = [];
-
     public const array OPTIONAL_ARGUMENTS = [
         self::ARGUMENT_EXPIRY_MINUTES => NumberInputElement::class,
         self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER => NumberInputElement::class,
     ];
+
+    /** @var array|InteractionArgumentLocation[] */
+    public const array ARGUMENT_LOCATION_MAP = [
+        self::ARGUMENT_QUEUE => InteractionArgumentLocation::PRIVATE_METADATA,
+        self::ARGUMENT_MAXIMUM_ENTRIES_PER_USER => InteractionArgumentLocation::STATE,
+        self::ARGUMENT_EXPIRY_MINUTES => InteractionArgumentLocation::STATE,
+    ];
+
+    public const array REQUIRED_FIELDS = [];
 
     public const array FIELD_LABEL_MAP = [
         self::ARGUMENT_EXPIRY_MINUTES => 'How long before the first person in the queue gets removed',
