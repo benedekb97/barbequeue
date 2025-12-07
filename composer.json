@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^3.1",
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.5",
+        "jolicode/slack-php-api": "^4.8",
         "nesbot/carbon": "^3.11",
         "stof/doctrine-extensions-bundle": "^1.14",
         "symfony/console": "7.4.*",

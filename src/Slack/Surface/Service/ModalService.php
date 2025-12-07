@@ -8,6 +8,8 @@ use App\Entity\Queue;
 use App\Slack\Block\Component\SectionBlock;
 use App\Slack\Command\Component\SlackCommand;
 use App\Slack\Surface\Component\ModalSurface;
+use JoliCode\Slack\Api\Client;
+use JoliCode\Slack\ClientFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
@@ -15,11 +17,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 readonly class ModalService
 {
+    private Client $client;
+
     public function __construct(
-        private HttpClientInterface $httpClient,
         private LoggerInterface $logger,
-        private string $slackAccessToken,
+        string $slackAccessToken,
     ) {
+        $this->client = ClientFactory::create($slackAccessToken);
     }
 
     public function createQueueModal(Queue $queue, SlackCommand $command): void
@@ -37,13 +41,7 @@ readonly class ModalService
         );
 
         try {
-            $response = $this->httpClient->request('POST', 'https://slack.com/api/views.open', [
-                'headers' => [
-                    'Authorization' => 'Bearer '.$this->slackAccessToken,
-                    'Content-Type' => 'application/json',
-                ],
-                'body' => json_encode($modal->toArray(), JSON_UNESCAPED_SLASHES),
-            ]);
+            $response = $this->client->viewsOpen($modal->toArray());
         } catch (ServerException|HttpExceptionInterface $exception) {
             $response = $exception->getResponse();
 
@@ -52,6 +50,8 @@ readonly class ModalService
         } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage());
             $this->logger->error($exception::class);
+
+            return;
         }
 
         $this->logger->debug($response->getContent(false));
