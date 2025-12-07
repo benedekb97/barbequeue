@@ -27,6 +27,6 @@ readonly class InteractionController
 
         $this->messageBus->dispatch(new SlackInteractionMessage($interaction));
 
-        return new JsonResponse();
+        return new Response();
     }
 }
