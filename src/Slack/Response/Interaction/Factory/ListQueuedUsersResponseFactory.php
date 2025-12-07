@@ -81,7 +81,7 @@ readonly class ListQueuedUsersResponseFactory
                 sprintf(
                     '%s has %d minutes left at the front of the queue.',
                     $queue->getFirstPlace()->getUserLink(),
-                    $queue->getFirstPlace()->getExpiresAt()->diffInMinutes(CarbonImmutable::now())
+                    CarbonImmutable::now()->diffInMinutes($queue->getFirstPlace()->getExpiresAt())
                 )
             );
         }
