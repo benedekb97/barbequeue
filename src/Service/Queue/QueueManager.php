@@ -120,7 +120,7 @@ readonly class QueueManager
 
         $queue->removeQueuedUser($queuedUser);
 
-        $this->eventDispatcher->dispatch(new QueuedUserRemovedEvent($queuedUser, $queue, true, true));
+        $this->eventDispatcher->dispatch(new QueuedUserRemovedEvent($queuedUser, $queue, true));
 
         $this->entityManager->remove($queuedUser);
         $this->entityManager->flush();

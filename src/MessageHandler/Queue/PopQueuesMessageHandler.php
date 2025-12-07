@@ -35,7 +35,7 @@ readonly class PopQueuesMessageHandler
             }
 
             $this->eventDispatcher->dispatch(
-                new QueuedUserRemovedEvent($queuedUser, $queue, true)
+                new QueuedUserRemovedEvent($queuedUser, $queue, true, true)
             );
         }
 
