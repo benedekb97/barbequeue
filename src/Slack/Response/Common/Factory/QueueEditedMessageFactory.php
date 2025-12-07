@@ -37,7 +37,7 @@ class QueueEditedMessageFactory
                             'text' => 'Top of queue expiry (minutes)',
                         ],[
                             'type' => 'raw_text',
-                            'text' => $queue->getExpiryMinutes() ?: 'No expiry',
+                            'text' => (string) ($queue->getExpiryMinutes() ?: 'No expiry'),
                         ]
                     ],[
                         [
@@ -45,7 +45,7 @@ class QueueEditedMessageFactory
                             'text' => 'Maximum entries per user',
                         ],[
                             'type' => 'raw_text',
-                            'text' => $queue->getMaximumEntriesPerUser() ?: 'No limit',
+                            'text' => (string) ($queue->getMaximumEntriesPerUser() ?: 'No limit'),
                         ]
                     ]
                 ]),
