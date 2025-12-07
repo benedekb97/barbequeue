@@ -22,7 +22,7 @@ readonly class OpenQueueAdminModalHandler implements SlackCommandHandlerInterfac
 
     public function supports(SlackCommand $command): bool
     {
-        return $command->getCommand() === Command::BBQ_ADMIN && $command->getSubCommand() === SubCommand::QUEUE;
+        return $command->getCommand() === Command::BBQ_ADMIN && $command->getSubCommand() === SubCommand::EDIT_QUEUE;
     }
 
     public function handle(SlackCommand $command): void

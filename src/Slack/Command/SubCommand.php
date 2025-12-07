@@ -14,5 +14,5 @@ enum SubCommand: string
     // bbq-admin sub-commands
     case ADD = 'add';
     case REMOVE = 'remove';
-    case QUEUE = 'queue';
+    case EDIT_QUEUE = 'edit-queue';
 }

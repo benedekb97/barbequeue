@@ -67,11 +67,11 @@ class CommandControllerTest extends KernelTestCase
                 $exception->getMessage(),
             ],
             'InvalidArgumentCountException' => [
-                $exception = new InvalidArgumentCountException(Command::BBQ, SubCommand::QUEUE),
+                $exception = new InvalidArgumentCountException(Command::BBQ, SubCommand::EDIT_QUEUE),
                 $exception->getMessage(),
             ],
             'InvalidSubCommandException' => [
-                $exception = new InvalidSubCommandException(Command::BBQ, SubCommand::QUEUE),
+                $exception = new InvalidSubCommandException(Command::BBQ, SubCommand::EDIT_QUEUE),
                 $exception->getMessage(),
             ],
             'ValueError' => [
