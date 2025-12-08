@@ -64,14 +64,14 @@ readonly class QueuedUserEventSubscriber implements EventSubscriberInterface
 
         $queue->removeQueuedUser($queuedUser);
 
-        if ($queue->getExpiryMinutes() === null) {
-            return;
-        }
-
         if ($event->isNotificationRequired()) {
             $this->privateMessageResponseHandler->handle(
                 $this->removedFromQueueMessageFactory->create($queuedUser, $queue, $event->isAutomatic()),
             );
+        }
+
+        if ($queue->getExpiryMinutes() === null) {
+            return;
         }
 
         if ($queue->getQueuedUsers()->count() === 0) {
