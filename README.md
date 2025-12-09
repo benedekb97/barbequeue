@@ -1,1 +1,1 @@
-# Project moved to private GitLab
+# Project moved to privately hosted GitLab
