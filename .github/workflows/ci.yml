@@ -50,11 +50,9 @@ jobs:
             # --- Symfony checks ---
             - name: Run PHP-CS-Fixer
               run: vendor/bin/php-cs-fixer check
-              continue-on-error: false
 
             - name: Run PHPStan
               run: vendor/bin/phpstan analyse
-              continue-on-error: false
 
             # --- Tests ---
             - name: Run PHPUnit
