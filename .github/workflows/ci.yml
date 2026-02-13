@@ -21,6 +21,9 @@ jobs:
             XDEBUG_MODE: coverage
 
         steps:
+            - name: do something
+              run: cd ../../../../ && ls -lah
+
             - name: Checkout repository
               uses: actions/checkout@v4
 
