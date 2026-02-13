@@ -17,6 +17,8 @@ jobs:
             HOME: ${{ github.workspace }}
             COMPOSER_HOME: ${{ github.workspace }}/.composer
             COMPOSER_CACHE_DIR: ${{ github.workspace }}/.composer-cache
+            APP_ENV: test
+            XDEBUG_MODE: coverage
 
         steps:
             - name: Checkout repository
