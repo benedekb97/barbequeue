@@ -13,6 +13,10 @@ jobs:
     test:
         runs-on: self-hosted
         timeout-minutes: 30
+        env:
+            HOME: ${{ github.workspace }}
+            COMPOSER_HOME: ${{ github.workspace }}/.composer
+            COMPOSER_CACHE_DIR: ${{ github.workspace }}/.composer-cache
 
         steps:
             - name: Checkout repository
