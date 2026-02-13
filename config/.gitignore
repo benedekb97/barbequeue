@@ -1,3 +1,2 @@
 secrets/prod/prod.decrypt.private.php
-secrets/qa/qa.decrypt.private.php
 secrets/dev

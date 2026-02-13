@@ -6,10 +6,6 @@ when@prod:
     framework:
         error_controller: App\Controller\ErrorController::show
 
-when@qa:
-    framework:
-        error_controller: App\Controller\ErrorController::show
-
 when@test:
     framework:
         test: true
