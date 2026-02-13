@@ -45,7 +45,7 @@
 
     <coverage>
         <report>
-            <cobertura outputFile="reports/coverage.xml"/>
+            <clover outputFile="reports/coverage.xml"/>
         </report>
     </coverage>
 

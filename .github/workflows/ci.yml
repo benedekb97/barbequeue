@@ -61,3 +61,5 @@ jobs:
             # --- Create coverage badge ---
             - name: phpunit-coverage-badge
               uses: timkrase/phpunit-coverage-badge@v1.2.1
+              with:
+                  report: $HOME/reports/coverage.xml
