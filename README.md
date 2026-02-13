@@ -1,5 +1,8 @@
 # BarbeQueue
 
+[![Tests](https://github.com/benedekb97/barbequeue/actions/workflows/ci.yml/badge.svg)](https://github.com/benedekb97/barbequeue/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 BarbeQueue is an open-source deployment queue manager for teams running multiple services.
 
 It helps developers and DevOps teams answer the most important question during busy release cycles:
