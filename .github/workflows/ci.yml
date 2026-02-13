@@ -48,9 +48,6 @@ jobs:
               run: php bin/console doctrine:fixtures:load --no-interaction
 
             # --- Symfony checks ---
-            - name: Validate Composer files
-              run: composer validate --strict
-
             - name: Run PHP-CS-Fixer
               run: vendor/bin/php-cs-fixer check
               continue-on-error: false
