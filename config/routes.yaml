@@ -1,0 +1,4 @@
+controllers:
+    prefix: 'api'
+    name_prefix: 'api_'
+    resource: routing.controllers

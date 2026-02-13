@@ -1,0 +1,33 @@
+parameters:
+    slack.signing-secret: '%env(SLACK_SIGNING_SECRET)%'
+    slack.sign-enabled: '%env(SLACK_SIGN_ENABLED)%'
+
+    slack.client-id: '%env(SLACK_CLIENT_ID)%'
+    slack.client-secret: '%env(SLACK_CLIENT_SECRET)%'
+    slack.auth-url: 'https://slack.com/oauth/v2/authorize'
+    slack.scopes:
+        - commands
+        - chat:write
+        - chat:write.public
+        - im:write
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    App\:
+        resource: '../src/'
+
+    App\Service\OAuth\OAuthService:
+        arguments:
+            $slackClientId: '%slack.client-id%'
+            $slackClientSecret: '%slack.client-secret%'
+            $slackAuthUrl: '%slack.auth-url%'
+            $slackScopes: '%slack.scopes%'
+
+    App\Security\Authenticator\SignedSlackAuthenticator:
+        arguments:
+            $signingSecret: '%slack.signing-secret%'
+            $signEnabled: '%slack.sign-enabled%'
+

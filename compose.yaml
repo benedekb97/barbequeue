@@ -1,0 +1,73 @@
+---
+x-php-base: &php_base
+  image: ${IMAGES_PREFIX:-}app-php
+  restart: unless-stopped
+  environment:
+    SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
+    DEFAULT_URI: https://${SERVER_NAME:-localhost}:${HTTPS_PORT:-443}
+
+    MESSENGER_TRANSPORT_DSN: redis://redis:6379/messages
+    REDIS_URL: redis://redis:6379/
+
+    SYMFONY_VERSION: ${SYMFONY_VERSION:-}
+    STABILITY: ${STABILITY:-stable}
+  volumes:
+    - caddy_data:/data
+    - caddy_config:/config
+
+services:
+
+  php:
+    <<: *php_base
+
+  messenger:
+    <<: *php_base
+    healthcheck:
+      test: ["CMD-SHELL", "bash", "-c", "exit 0;"]
+    command: ["bash", "-c", "bin/console messenger:consume async -vvv --limit=10 --time-limit=3600 --memory-limit=128M"]
+
+  scheduler:
+    <<: *php_base
+    healthcheck:
+      test: ["CMD-SHELL", "bash", "-c", "exit 0;"]
+    command: ["bash", "-c", "bin/console messenger:consume scheduler_default -vvv --limit=10 --time-limit=3600 --memory-limit=128M"]
+
+###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-barbequeue}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-barbequeue}
+      POSTGRES_USER: ${POSTGRES_USER:-barbequeue}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-barbequeue}", "-U", "${POSTGRES_USER:-barbequeue}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+
+###> redis ###
+  redis:
+    image: redis:latest
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
+
+###> redis ###
+  redis_data:
+###< redis ###
+

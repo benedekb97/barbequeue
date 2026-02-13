@@ -1,0 +1,51 @@
+nelmio_api_doc:
+    use_validation_groups: true
+
+    type_info: true
+    documentation:
+        info:
+            title: BarbeQueue
+            description: BarbeQueue API
+            version: 1.3.0
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: api-token
+            schemas:
+                NotFoundResponse:
+                    required: [message, code]
+                    properties:
+                        message:
+                            type: string
+                            example: Not found
+                        code:
+                            type: integer
+                            example: 404
+                UnauthorizedResponse:
+                    required: [message, code]
+                    properties:
+                        message:
+                            type: string
+                            example: Unauthorized
+                        code:
+                            type: integer
+                            example: 401
+                BlockedRepository:
+                    required: [id, name]
+                    properties:
+                        id:
+                            type: integer
+                            example: 1
+                        name:
+                            type: string
+                            example: repository-name
+        security:
+            - Bearer: []
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api/queue # Accepts routes under /api except /api/doc or /api/slack
+            - ^/api/repository
+            - ^/api/me
+            - ^/api/metrics

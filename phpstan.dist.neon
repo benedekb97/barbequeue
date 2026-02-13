@@ -1,0 +1,13 @@
+parameters:
+    level: 10
+    paths:
+        - bin/
+        - config/
+        - src/
+        - tests/Unit
+        - tests/Integration
+    ignoreErrors:
+        - identifier: missingType.iterableValue
+        -
+            identifier: property.unusedType
+            path: src/Entity
