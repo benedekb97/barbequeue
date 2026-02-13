@@ -57,12 +57,3 @@ jobs:
             # --- Tests ---
             - name: Run PHPUnit
               run: vendor/bin/phpunit --testdox
-
-            # --- Create coverage badge ---
-            - name: Make code coverage badge
-              uses: timkrase/phpunit-coverage-badge@v1.2.1
-              with:
-                  report: reports/coverage.xml
-                  coverage_badge_path: output/coverage.svg
-                  push_badge: true
-                  repo_token: ${{ secrets.GITHUB_TOKEN }}
